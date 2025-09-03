@@ -1067,8 +1067,7 @@ int GetPQDistance(const unsigned char *basecode, const unsigned char *querycode,
     int maxDim = 2000;   /* Maximum dimension value */
     int maxPQksub = 256; /* Maximum PQ sub-center value */
     if (pqM <= 0 || dim % pqM != 0 || dim < pqM || dim < 1 || dim > maxDim || pqM > maxDim || pqKsub <= 0 ||
-        pqKsub > maxPQksub || basecode_size < static_cast<size_t>(pqM) || querycode_size < static_cast<size_t>(pqM) ||
-        pqDistance_size < 1) {
+        pqKsub > maxPQksub || basecode_size < static_cast<size_t>(pqM) || pqDistance_size < 1) {
         std::cerr << "Error: invalid pq values" << std::endl
                   << "dim = " << dim << std::endl
                   << "pqM = " << pqM << std::endl
@@ -1130,13 +1129,17 @@ int GetPQDistance(const unsigned char *basecode, const unsigned char *querycode,
             num -= 1;
         }
     } else {
+        if (querycode_size < static_cast<size_t>(pqM) ||
+            pqDistanceTable_size < static_cast<size_t>(pqM * pqKsub * pqKsub)) {
+            std::cerr << "Error: invalid querycode or pqDistanceTable values" << std::endl;
+			return -1;
+        }
         size_t offset = 0;
         for (int k = 0; k < pqM; k++) {
             int i = basecode[k];
             int j = querycode[k];
-            if (i >= pqKsub || i < 0 || j >= pqKsub || j < 0 ||
-                pqDistanceTable_size < static_cast<size_t>(pqM * pqKsub * pqKsub)) {
-                std::cerr << "Error: invalid basecode or querycode or pqDistanceTable values" << std::endl;
+            if (i >= pqKsub || i < 0 || j >= pqKsub || j < 0) {
+                std::cerr << "Error: invalid basecode or querycode values" << std::endl;
                 return -1;
             }
             offset = k * pqKsub * pqKsub + i * pqKsub + j;
