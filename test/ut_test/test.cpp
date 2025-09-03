@@ -235,10 +235,10 @@ TEST(GetPQDistance_testl2_Sdc, l2_Sdc){
     float res = 24;
     uint8 base2[4] = {9,11,21,35};
     uint8 query2[4] = {31,21,11,10};
-    EXPECT_EQ(GetPQDistance(base, query, &params, pqDistanceTable, &PQDistance), 0);
-    EXPECT_EQ(GetPQDistance(base2, query2, &params, pqDistanceTable, &PQDistance), -1);
+    EXPECT_EQ(GetPQDistance(base, query, &params, pqDistanceTable, &PQDistance, pqM, pqM, pqM * pqKsub * pqKsub, 1), 0);
+    EXPECT_EQ(GetPQDistance(base2, query2, &params, pqDistanceTable, &PQDistance, pqM, pqM, pqM * pqKsub * pqKsub, 1), -1);
     EXPECT_EQ(PQDistance, res);
-    EXPECT_EQ(GetPQDistance(NULL, query, &params, pqDistanceTable, &PQDistance), -1);
+    EXPECT_EQ(GetPQDistance(NULL, query, &params, pqDistanceTable, &PQDistance, pqM, pqM, pqM * pqKsub * pqKsub, 1), -1);
 }
 
 /*
@@ -264,9 +264,9 @@ TEST(GetPQDistance_testl2_adc, l2_adc){
     };
     float res = 16;
 
-    EXPECT_EQ(GetPQDistance(base, nullptr, &params, pqDistanceTable, &PQDistance), 0);
+    EXPECT_EQ(GetPQDistance(base, nullptr, &params, pqDistanceTable, &PQDistance, pqM, 0, pqM * pqKsub, 1), 0);
     EXPECT_EQ(PQDistance, res);
-    EXPECT_EQ(GetPQDistance(base, nullptr, NULL, pqDistanceTable, &PQDistance), -1);
+    EXPECT_EQ(GetPQDistance(base, nullptr, NULL, pqDistanceTable, &PQDistance, pqM, 0, pqM * pqKsub, 1), -1);
 
     float PQDistance20 = 0;
     uint8 base20[20] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
@@ -279,7 +279,7 @@ TEST(GetPQDistance_testl2_adc, l2_adc){
             VECTOR_SIZE(dim / pqM),
             NULL
     };
-    EXPECT_EQ(GetPQDistance(base20, nullptr, &params20, pqDistanceTable20, &PQDistance20), -1);
+    EXPECT_EQ(GetPQDistance(base20, nullptr, &params20, pqDistanceTable20, &PQDistance20, 20, 0, 20 * 1, 1), -1);
 
     float PQDistance10 = 0;
     uint8 base10[10] = {0,0,0,0,0,0,0,0,0,0};
@@ -310,9 +310,9 @@ TEST(GetPQDistance_testl2_adc, l2_adc){
             VECTOR_SIZE(dim / pqM),
             NULL
     };
-    EXPECT_EQ(GetPQDistance(base10, nullptr, &params10, pqDistanceTable10, &PQDistance10), 0);
-    EXPECT_EQ(GetPQDistance(base4, nullptr, &params4, pqDistanceTable4, &PQDistance10), -1);
-    EXPECT_EQ(GetPQDistance(base10, nullptr, &params10_1, pqDistanceTable10, &PQDistance10), -1);
+    EXPECT_EQ(GetPQDistance(base10, nullptr, &params10, pqDistanceTable10, &PQDistance10, 10, 0, 10 * 1 * 1, 1), 0);
+    EXPECT_EQ(GetPQDistance(base4, nullptr, &params4, pqDistanceTable4, &PQDistance10, 10, 0, 10 * 1 * 1, 1), -1);
+    EXPECT_EQ(GetPQDistance(base10, nullptr, &params10_1, pqDistanceTable10, &PQDistance10, 10, 0, 10 * 1 * 1, 1), -1);
 }
 
 /*
@@ -363,15 +363,15 @@ TEST(ComputeVectorPQCode_Test, ComputeVectorPQCode){
             nullptr
     };
     uint8 res[4] = {1,0,0,0};
-    EXPECT_EQ(ComputeVectorPQCode(vector, &params, pqCode), 0);
-    EXPECT_EQ(ComputeVectorPQCode(vector, &params2, pqCode), -1);
+    EXPECT_EQ(ComputeVectorPQCode(vector, &params, pqCode, pqM), 0);
+    EXPECT_EQ(ComputeVectorPQCode(vector, &params2, pqCode, pqM), -1);
     for(int i = 0 ; i < 4; i++){
         EXPECT_EQ(res[i],pqCode[i]);
     }
-    EXPECT_EQ(ComputeVectorPQCode(NULL, &params, pqCode), -1);
-    EXPECT_EQ(ComputeVectorPQCode(vector, NULL, pqCode), -1);
-    EXPECT_EQ(ComputeVectorPQCode(vector, &params, NULL), -1);
-    EXPECT_EQ(ComputeVectorPQCode(vector, &params_null, pqCode), -1);
+    EXPECT_EQ(ComputeVectorPQCode(NULL, &params, pqCode, pqM), -1);
+    EXPECT_EQ(ComputeVectorPQCode(vector, NULL, pqCode, pqM), -1);
+    EXPECT_EQ(ComputeVectorPQCode(vector, &params, NULL, pqM), -1);
+    EXPECT_EQ(ComputeVectorPQCode(vector, &params_null, pqCode, pqM), -1);
 
     PQParams params_size = {
             pqM,
@@ -381,7 +381,7 @@ TEST(ComputeVectorPQCode_Test, ComputeVectorPQCode){
             0,
             pqTable
     };
-    EXPECT_EQ(ComputeVectorPQCode(vector, &params_size, pqCode), -1);
+    EXPECT_EQ(ComputeVectorPQCode(vector, &params_size, pqCode, pqM), -1);
 
     free(pqTable);
     free(pqCode);
@@ -431,8 +431,8 @@ TEST(GetPQDistanceTable_test, sdc_adc){
             pqTable
     };
     float res1[64] = {0,1,4,9,1,0,1,4,4,1,0,1,9,4,1,0,0,1,4,9,1,0,1,4,4,1,0,1,9,4,1,0,0,1,4,9,1,0,1,4,4,1,0,1,9,4,1,0,0,1,4,9,1,0,1,4,4,1,0,1,9,4,1,0};
-    EXPECT_EQ(GetPQDistanceTableSdc(&params1, pqDistanceTable1), 0);
-    EXPECT_EQ(GetPQDistanceTableSdc(&params_size, pqDistanceTable1), -1);
+    EXPECT_EQ(GetPQDistanceTableSdc(&params1, pqDistanceTable1, pqM * pqKsub * pqKsub), 0);
+    EXPECT_EQ(GetPQDistanceTableSdc(&params_size, pqDistanceTable1, pqM * pqKsub * pqKsub), -1);
     for(int i = 0; i < 64; i++){
         EXPECT_EQ(res1[i], pqDistanceTable1[i]);
     }
@@ -455,7 +455,7 @@ TEST(GetPQDistanceTable_test, sdc_adc){
             subItemSize20,
             pqTable20
     };
-    EXPECT_EQ(GetPQDistanceTableSdc(&params20, pqDistanceTable20), 0);
+    EXPECT_EQ(GetPQDistanceTableSdc(&params20, pqDistanceTable20, pqM * pqKsub * pqKsub), 0);
     free(pqDistanceTable20);
     free(vectors20);
     free(pqTable20);
@@ -463,8 +463,8 @@ TEST(GetPQDistanceTable_test, sdc_adc){
     float *qDis1 = (float*)malloc(4*4*sizeof(float));
     float *qDisSize = (float*)malloc(4*4*sizeof(float));
     float res2[16] = {0,1,4,9,9,16,25,36,36,49,64,81,81,100,121,144};
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params1, qDis1), 0);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params_size, qDisSize), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params1, qDis1, pqM * pqKsub * pqKsub), 0);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params_size, qDisSize, pqM * pqKsub * pqKsub), -1);
     for(int i = 0; i < 16; i++){
         EXPECT_EQ(res2[i], qDis1[i]);
     }
@@ -483,7 +483,7 @@ TEST(GetPQDistanceTable_test, sdc_adc){
                       -16,-20,-24,-28,-20,-25,-30,-35,-24,-30,-36,-42,-28,-35,-42,-49,
                       -64,-72,-80,-88,-72,-81,-90,-99,-80,-90,-100,-110,-88,-99,-110,-121,
                       -144,-156,-168,-180,-156,-169,-182,-195,-168,-182,-196,-210,-180,-195,-210,-225};
-    EXPECT_EQ(GetPQDistanceTableSdc(&params2, pqDistanceTable2), 0);
+    EXPECT_EQ(GetPQDistanceTableSdc(&params2, pqDistanceTable2, pqM * pqKsub * pqKsub), 0);
     for(int i = 0; i < 64; i++){
         EXPECT_EQ(res3[i], pqDistanceTable2[i]);
     }
@@ -491,7 +491,7 @@ TEST(GetPQDistanceTable_test, sdc_adc){
 
     float *qDis2 = (float*)malloc(4*4*sizeof(float));
     float res4[16] = {0,0,0,0,-4,-5,-6,-7,-16,-18,-20,-22,-36,-39,-42,-45};
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params2, qDis2), 0);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params2, qDis2, pqM * pqKsub * pqKsub), 0);
     for(int i = 0; i < 16; i++){
         EXPECT_EQ(res4[i], qDis2[i]);
     }
@@ -508,10 +508,10 @@ TEST(GetPQDistanceTable_test, sdc_adc){
             nullptr
     };
 
-    EXPECT_EQ(GetPQDistanceTableSdc(nullptr, nullptr), -1);
-    EXPECT_EQ(GetPQDistanceTableSdc(&params3, pqDistanceTable3), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(nullptr, nullptr, nullptr), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params3, qDis3), -1);
+    EXPECT_EQ(GetPQDistanceTableSdc(nullptr, nullptr, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableSdc(&params3, pqDistanceTable3, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(nullptr, nullptr, nullptr, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params3, qDis3, pqM * pqKsub * pqKsub), -1);
 
     PQParams params4 = {
             -1,
@@ -529,9 +529,9 @@ TEST(GetPQDistanceTable_test, sdc_adc){
             subItemSize,
             pqTable
     };
-    EXPECT_EQ(GetPQDistanceTableSdc(&params4, pqDistanceTable3), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params4, qDis3), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params5, qDis3), -1);
+    EXPECT_EQ(GetPQDistanceTableSdc(&params4, pqDistanceTable3, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params4, qDis3, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params5, qDis3, pqM * pqKsub * pqKsub), -1);
 
     free(pqDistanceTable3);
     free(qDis3);
