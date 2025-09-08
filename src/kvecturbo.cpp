@@ -258,7 +258,6 @@ void VectorArrayRelease(VectorArray arrays)
 		arrays->items = nullptr;
     }
     free(arrays);
-	arrays == nullptr;
 }
 /*
  * @brief Split a vector array into subarrays
@@ -717,7 +716,7 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
         size_t remainingSize = static_cast<size_t>((numSamples - i) * dimensions * sizeof(float));
         if (remainingSize > SECUREC_MEM_MAX_LEN) {
 			remainingSize = SECUREC_MEM_MAX_LEN;
-		}	
+		}
         errno_t result =
             memcpy_s(samplesData.get() + i * dimensions, remainingSize, vec->x, dimensions * sizeof(float));
         if (result != 0) {
