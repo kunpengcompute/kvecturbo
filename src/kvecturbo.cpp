@@ -255,6 +255,7 @@ void VectorArrayRelease(VectorArray arrays)
     }
     if (arrays->items != nullptr) {
         free(arrays->items);
+		arrays->items = nullptr;
     }
     free(arrays);
 }
@@ -616,7 +617,7 @@ int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::
                 break;
 
             size_t offset = j * dimensions;
-            size_t remainingBytes = (numCentersD * dimensions - offset) * sizeof(float);
+            size_t remainingBytes = (numCentersD - offset) * sizeof(float);
             float *sumBuffer = agg + j * dimensions;
 
             if (centerCounts[j] > 0) {
@@ -713,6 +714,9 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
             continue;
         }
         size_t remainingSize = static_cast<size_t>((numSamples - i) * dimensions * sizeof(float));
+        if (remainingSize > SECUREC_MEM_MAX_LEN) {
+			remainingSize = SECUREC_MEM_MAX_LEN;
+		}
         errno_t result =
             memcpy_s(samplesData.get() + i * dimensions, remainingSize, vec->x, dimensions * sizeof(float));
         if (result != 0) {
@@ -809,6 +813,7 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
             return -1;
         }
         free(vec);
+		vec = nullptr;
     }
 
     centers->length = numCenters;
