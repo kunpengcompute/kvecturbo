@@ -70,6 +70,8 @@ kvecturbo
 
 KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开源。
 
+本项目的文档适用CC-BY 4.0许可证，具体请参见[LICENSE](./docs/LICENSE)文件。
+
 ## 贡献声明<a name="ZH-CN_TOPIC_0000002552244187"></a>
 
 欢迎大家为社区做贡献，如果使用过程中有任何问题/建议，或者需要反馈特性需求和bug报告，可以提交[Issues](https://gitcode.com/boostkit/community/blob/master/docs/contributor/issue-submit.md)联系我们，具体贡献方法可参考[这里](https://gitcode.com/boostkit/community/blob/master/docs/contributor/contributing.md)。同时也欢迎大家在[讨论专区](https://gitcode.com/boostkit/community/discussions)展开讨论交流。感谢您的支持。
