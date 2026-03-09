@@ -21,7 +21,14 @@ kvecturbo
 │   └── kvecturbo.h          // 对外声明的API、结构体、宏定义
 ├── src
 │   └── kvecturbo.cpp        // K‑means、PQ编码/搜索、SIMD加速等
-└── test                     // ut测试
+├── test                     // ut测试
+└── docs
+	├── public_sys-resources
+	├── api_reference.md             // API参考
+	├── installation_guide.md        // 安装指南
+	├── quick_start.md               // 快速上手
+	├── release_notes.md             // 版本说明书
+	└── LICENSE
 ```
 
 ## 版本说明<a name="ZH-CN_TOPIC_0000002521324210"></a>
@@ -68,7 +75,7 @@ kvecturbo
 
 ## License<a name="ZH-CN_TOPIC_0000002521324208"></a>
 
-KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开源。
+KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开源，具体请参见[LICENSE](./LICENSE)文件。
 
 本项目的文档适用CC-BY 4.0许可证，具体请参见[LICENSE](./docs/LICENSE)文件。
 
