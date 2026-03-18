@@ -42,7 +42,6 @@
 </tbody>
 </table>
 
-
 ## 编译KVecTurbo<a name="ZH-CN_TOPIC_0000002553681205"></a>
 
 从GitCode获取KVecTurbo开源代码，安装必要的依赖工具后编译KVecTurbo。
@@ -77,4 +76,3 @@
     ```
 
     生成的动态库文件libkvecturbo.so. **_xxxx_** 位于“out/lib“文件夹下，头文件位于“out/include“文件夹下。其中 **_xxxx_** 表示版本号。
-

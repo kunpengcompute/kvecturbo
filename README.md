@@ -2,8 +2,8 @@
 
 ## 最新消息<a name="ZH-CN_TOPIC_0000002521324212"></a>
 
--   \[2025.09.30\]：新增支持千万以上底库向量。
--   \[2025.03.30\]：新增鲲鹏自研的向量检索加速组件KVecTurbo，对接openGauss向量数据库使用。将高维向量量化压缩，快速获取query的近邻，同时使用SIMD指令集加速距离计算。
+- \[2025.09.30\]：新增支持千万以上底库向量。
+- \[2025.03.30\]：新增鲲鹏自研的向量检索加速组件KVecTurbo，对接openGauss向量数据库使用。将高维向量量化压缩，快速获取query的近邻，同时使用SIMD指令集加速距离计算。
 
 ## 项目介绍<a name="ZH-CN_TOPIC_0000002521164214"></a>
 
@@ -23,12 +23,12 @@ kvecturbo
 │   └── kvecturbo.cpp        // K‑means、PQ编码/搜索、SIMD加速等
 ├── test                     // ut测试
 └── docs
-	├── public_sys-resources
-	├── api_reference.md             // API参考
-	├── installation_guide.md        // 安装指南
-	├── quick_start.md               // 快速上手
-	├── release_notes.md             // 版本说明书
-	└── LICENSE
+ ├── public_sys-resources
+ ├── api_reference.md             // API参考
+ ├── installation_guide.md        // 安装指南
+ ├── quick_start.md               // 快速上手
+ ├── release_notes.md             // 版本说明书
+ └── LICENSE
 ```
 
 ## 版本说明<a name="ZH-CN_TOPIC_0000002521324210"></a>
@@ -87,7 +87,6 @@ KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开
 
 KVecTurbo由华为公司的下列部门联合贡献：
 
--   鲲鹏计算Boostkit开发部
+- 鲲鹏计算Boostkit开发部
 
 感谢来自社区的每一个PR，欢迎贡献KVecTurbo！
-

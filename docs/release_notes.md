@@ -23,7 +23,6 @@
 </tbody>
 </table>
 
-
 ### 与操作系统、编译器和CPU配套说明<a name="ZH-CN_TOPIC_0000002549873929"></a>
 
 **表 1** KVecTurbo已验证环境<a id="KVecturbo已验证环境"></a>
@@ -65,7 +64,6 @@
 </tr>
 </tbody>
 </table>
-
 
 ### 病毒扫描结果<a name="ZH-CN_TOPIC_0000002549753917"></a>
 
@@ -120,15 +118,11 @@
 </tbody>
 </table>
 
-
-
 ## 版本使用注意事项<a name="ZH-CN_TOPIC_0000002518234170"></a>
 
 ### 使用注意事项<a name="ZH-CN_TOPIC_0000002518234162"></a>
 
 请参见《KVecturbo安装指南》。
-
-
 
 ## V25.3.0<a name="ZH-CN_TOPIC_0000002549873899"></a>
 
@@ -146,17 +140,13 @@ KVecturbo本次无更新。
 
 无
 
-
 ### 已解决的问题<a name="ZH-CN_TOPIC_0000002518234166"></a>
 
 无
 
-
 ### 遗留问题<a name="ZH-CN_TOPIC_0000002518234152"></a>
 
 无
-
-
 
 ## V25.2.RC1<a name="ZH-CN_TOPIC_0000002549753905"></a>
 
@@ -177,17 +167,13 @@ KVecturbo本次无更新。
 
 无
 
-
 ### 已解决的问题<a name="ZH-CN_TOPIC_0000002549873909"></a>
 
 无
 
-
 ### 遗留问题<a name="ZH-CN_TOPIC_0000002549873925"></a>
 
 无
-
-
 
 ## V1.2.0<a name="ZH-CN_TOPIC_0000002549753913"></a>
 
@@ -205,17 +191,13 @@ KVecturbo本次无更新。
 
 无
 
-
 ### 已解决的问题<a name="ZH-CN_TOPIC_0000002549753921"></a>
 
 无
 
-
 ### 遗留问题<a name="ZH-CN_TOPIC_0000002549873921"></a>
 
 无
-
-
 
 ## V1.1.0<a name="ZH-CN_TOPIC_0000002549873917"></a>
 
@@ -246,17 +228,13 @@ KVecturbo本次无更新。
 
 无
 
-
 ### 已解决的问题<a name="ZH-CN_TOPIC_0000002549753901"></a>
 
 无
 
-
 ### 遗留问题<a name="ZH-CN_TOPIC_0000002549753909"></a>
 
 无
-
-
 
 ## 版本配套文档<a name="ZH-CN_TOPIC_0000002518394078"></a>
 
@@ -302,10 +280,6 @@ KVecturbo本次无更新。
 </tbody>
 </table>
 
-
 ### 获取文档的方法<a name="ZH-CN_TOPIC_0000002518234140"></a>
 
 您可以通过访问[开源仓](https://gitcode.com/boostkit/kvecturbo)浏览和获取相关文档。
-
-
-

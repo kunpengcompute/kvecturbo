@@ -41,7 +41,6 @@ KVecTurbo提供的接口如[**表 1** KVecTurbo提供的接口](#KVecTurbo提供
 </tbody>
 </table>
 
-
 ## 结构体说明<a name="ZH-CN_TOPIC_0000002549753943"></a>
 
 KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“两类结构体，详细参数描述如[**表 1** 结构体VectorArray字段描述](#结构体VectorArray字段描述)和[**表 2** 结构体PQParams字段描述](#结构体PQParams字段描述)所示。
@@ -255,7 +254,6 @@ int main() {
 }
 ```
 
-
 ## ComputePQTable<a name="ZH-CN_TOPIC_0000002549873943"></a>
 
 **接口定义<a name="section172317194488"></a>**
@@ -283,14 +281,14 @@ int ComputePQTable\(VectorArray samples, PQParams \*params\);
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p1726499165213"><a name="p1726499165213"></a><a name="p1726499165213"></a>VectorArray</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>字段描述请参见<a href="结构体说明.md">结构体说明</a>中的<span class="parmname" id="parmname0442121133711"><a name="parmname0442121133711"></a><a name="parmname0442121133711"></a>“VectorArray”</span>字段描述。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname0442121133711"><a name="parmname0442121133711"></a><a name="parmname0442121133711"></a>“VectorArray”</span>字段描述。</p>
 </td>
 </tr>
 <tr id="row6286022173712"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p1596013543378"><a name="p1596013543378"></a><a name="p1596013543378"></a>params</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p226410910524"><a name="p226410910524"></a><a name="p226410910524"></a>PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="结构体说明.md">结构体说明</a>中的<span class="parmname" id="parmname7604423173715"><a name="parmname7604423173715"></a><a name="parmname7604423173715"></a>“PQParams”</span>字段描述。其中，<span class="parmname" id="parmname1493894154317"><a name="parmname1493894154317"></a><a name="parmname1493894154317"></a>“pqTable”</span>也可以作为输出值。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname7604423173715"><a name="parmname7604423173715"></a><a name="parmname7604423173715"></a>“PQParams”</span>字段描述。其中，<span class="parmname" id="parmname1493894154317"><a name="parmname1493894154317"></a><a name="parmname1493894154317"></a>“pqTable”</span>也可以作为输出值。</p>
 </td>
 </tr>
 </tbody>
@@ -390,7 +388,6 @@ int main() {
 }
 ```
 
-
 ## ComputeVectorPQCode<a name="ZH-CN_TOPIC_0000002518234188"></a>
 
 **接口定义<a name="section172317194488"></a>**
@@ -445,7 +442,7 @@ int ComputeVectorPQCode\(float \*vector, const PQParams \*params, unsigned char 
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p8969751950"><a name="p8969751950"></a><a name="p8969751950"></a>const PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="结构体说明.md">结构体说明</a>中的<span class="parmname" id="parmname2632102712379"><a name="parmname2632102712379"></a><a name="parmname2632102712379"></a>“PQParams”</span>字段描述。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname2632102712379"><a name="parmname2632102712379"></a><a name="parmname2632102712379"></a>“PQParams”</span>字段描述。</p>
 </td>
 </tr>
 </tbody>
@@ -576,7 +573,7 @@ int GetPQDistanceTableSdc\(const PQParams \*params, float \*pqDistanceTable, siz
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p550413473510"><a name="p550413473510"></a><a name="p550413473510"></a>const PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="结构体说明.md">结构体说明</a>中的<span class="parmname" id="parmname1734613325371"><a name="parmname1734613325371"></a><a name="parmname1734613325371"></a>“PQParams”</span>字段描述。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname1734613325371"><a name="parmname1734613325371"></a><a name="parmname1734613325371"></a>“PQParams”</span>字段描述。</p>
 </td>
 </tr>
 </tbody>
@@ -712,7 +709,7 @@ int GetPQDistanceTableAdc\(float\* vector, const PQParams \*params, float \*pqDi
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p674585615524"><a name="p674585615524"></a><a name="p674585615524"></a>const PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p184692620448"><a name="p184692620448"></a><a name="p184692620448"></a>字段描述请参见<a href="结构体说明.md">结构体说明</a>中的<span class="parmname" id="parmname1163683593716"><a name="parmname1163683593716"></a><a name="parmname1163683593716"></a>“PQParams”</span>字段描述。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p184692620448"><a name="p184692620448"></a><a name="p184692620448"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname1163683593716"><a name="parmname1163683593716"></a><a name="parmname1163683593716"></a>“PQParams”</span>字段描述。</p>
 </td>
 </tr>
 </tbody>
@@ -902,7 +899,7 @@ int GetPQDistance\(const unsigned char \*basecode, const unsigned char \*queryco
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p1358611261262"><a name="p1358611261262"></a><a name="p1358611261262"></a>const PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="结构体说明.md">结构体说明</a>中的<span class="parmname" id="parmname1724484014373"><a name="parmname1724484014373"></a><a name="parmname1724484014373"></a>“PQParams”</span>字段描述。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname1724484014373"><a name="parmname1724484014373"></a><a name="parmname1724484014373"></a>“PQParams”</span>字段描述。</p>
 </td>
 </tr>
 </tbody>

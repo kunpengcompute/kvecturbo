@@ -17,4 +17,3 @@ openGauss社区文档中心提供了KVecTurbo量化算法使用示例可供参�
 3. <a name="li19663161713104"></a>使用KVecTurbo算法。
 
     请参见《[PQ特性](https://docs.opengauss.org/zh/docs/latest/docs/DataVec/PQ.html)》**HNSW-PQ**章节使用。
-
