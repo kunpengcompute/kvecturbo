@@ -1,6 +1,4 @@
-# 快速入门<a name="ZH-CN_TOPIC_0000002522441506"></a>
-
-## 快速入门<a name="ZH-CN_TOPIC_0000002518234336"></a>
+# 快速入门
 
 KVecTurbo量化算法可对接openGauss（7.0.0 RC1及后续版本）数据库使用，提高HNSW（Hierarchical Navigable Small World）图算法的性能。
 

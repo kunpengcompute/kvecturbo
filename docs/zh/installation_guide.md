@@ -1,6 +1,6 @@
-# 安装指南<a name="ZH-CN_TOPIC_0000002553561419"></a>
+# 安装指南
 
-## 已验证环境<a name="ZH-CN_TOPIC_0000002553561323"></a>
+## 已验证环境
 
 **表 1** KVecturbo已验证环境<a id="KVecturbo已验证环境"></a>
 
@@ -42,7 +42,7 @@
 </tbody>
 </table>
 
-## 编译KVecTurbo<a name="ZH-CN_TOPIC_0000002553681205"></a>
+## 编译KVecTurbo
 
 从GitCode获取KVecTurbo开源代码，安装必要的依赖工具后编译KVecTurbo。
 

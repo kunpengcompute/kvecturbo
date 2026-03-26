@@ -1,17 +1,17 @@
-# KVecTurbo介绍<a name="ZH-CN_TOPIC_0000002553560441"></a>
+# KVecTurbo介绍
 
-## 最新消息<a name="ZH-CN_TOPIC_0000002521324212"></a>
+## 最新消息
 
 - \[2025.09.30\]：新增支持千万以上底库向量。
 - \[2025.03.30\]：新增鲲鹏自研的向量检索加速组件KVecTurbo，对接openGauss向量数据库使用。将高维向量量化压缩，快速获取query的近邻，同时使用SIMD指令集加速距离计算。
 
-## 项目介绍<a name="ZH-CN_TOPIC_0000002521164214"></a>
+## 项目介绍
 
 KVecTurbo是鲲鹏自研的向量检索加速组件，可对接openGauss向量数据库使用。KVecTurbo通过将高维向量量化压缩，快速获取query的近邻，同时使用SIMD指令集加速距离计算，用于多维向量最近邻搜索。
 
 KVecTurbo适用于鲲鹏920 7282C处理器，支持NEON指令（128位宽）。
 
-## 目录结构<a name="ZH-CN_TOPIC_0000002521324206"></a>
+## 目录结构
 
 KVecTurbo开源仓项目全量目录层级介绍如下：
 
@@ -31,11 +31,10 @@ kvecturbo
  └── LICENSE
 ```
 
-## 版本说明<a name="ZH-CN_TOPIC_0000002521324210"></a>
-
+## 版本说明
 关于KVecTurbo的版本更新情况请参见[《KVecTurbo版本说明书》](./docs/release_notes.md)。
 
-## 学习文档<a name="ZH-CN_TOPIC_0000002552364197"></a>
+## 学习文档
 
 <table>
 <thead align="left">
@@ -69,21 +68,21 @@ kvecturbo
 </tbody>
 </table>
 
-## 免责声明<a name="ZH-CN_TOPIC_0000002521164218"></a>
+## 免责声明
 
 此代码仓计划参与OpenGauss社区开源，仅作用于向量检索加速，编码风格遵照原生开源软件，继承原生开源软件安全设计，不破坏原生开源软件设计及编码风格和方式，软件的任何漏洞与安全问题，均由相应的上游社区根据其漏洞和安全响应机制解决。请密切关注上游社区发布的通知和版本更新。鲲鹏计算社区对软件的漏洞及安全问题不承担任何责任。
 
-## License<a name="ZH-CN_TOPIC_0000002521324208"></a>
+## License
 
 KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开源，具体请参见[LICENSE](./LICENSE)文件。
 
 本项目的文档适用CC-BY 4.0许可证，具体请参见[LICENSE](./docs/LICENSE)文件。
 
-## 贡献声明<a name="ZH-CN_TOPIC_0000002552244187"></a>
+## 贡献声明
 
 欢迎大家为社区做贡献，如果使用过程中有任何问题/建议，或者需要反馈特性需求和bug报告，可以提交[Issues](https://gitcode.com/boostkit/community/blob/master/docs/contributor/issue-submit.md)联系我们，具体贡献方法可参考[这里](https://gitcode.com/boostkit/community/blob/master/docs/contributor/contributing.md)。同时也欢迎大家在[讨论专区](https://gitcode.com/boostkit/community/discussions)展开讨论交流。感谢您的支持。
 
-## 致谢<a name="ZH-CN_TOPIC_0000002521164216"></a>
+## 致谢
 
 KVecTurbo由华为公司的下列部门联合贡献：
 

@@ -1,6 +1,6 @@
-# API参考<a name="ZH-CN_TOPIC_0000002522601510"></a>
+# API参考
 
-## 接口列表<a name="ZH-CN_TOPIC_0000002518394106"></a>
+## 接口列表
 
 KVecTurbo提供的接口如[**表 1** KVecTurbo提供的接口](#KVecTurbo提供的接口)所示。
 
@@ -41,7 +41,7 @@ KVecTurbo提供的接口如[**表 1** KVecTurbo提供的接口](#KVecTurbo提供
 </tbody>
 </table>
 
-## 结构体说明<a name="ZH-CN_TOPIC_0000002549753943"></a>
+## 结构体说明
 
 KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“两类结构体，详细参数描述如[**表 1** 结构体VectorArray字段描述](#结构体VectorArray字段描述)和[**表 2** 结构体PQParams字段描述](#结构体PQParams字段描述)所示。
 
@@ -254,7 +254,7 @@ int main() {
 }
 ```
 
-## ComputePQTable<a name="ZH-CN_TOPIC_0000002549873943"></a>
+## ComputePQTable
 
 **接口定义<a name="section172317194488"></a>**
 
@@ -388,7 +388,7 @@ int main() {
 }
 ```
 
-## ComputeVectorPQCode<a name="ZH-CN_TOPIC_0000002518234188"></a>
+## ComputeVectorPQCode
 
 **接口定义<a name="section172317194488"></a>**
 
@@ -528,7 +528,7 @@ int main() {
 }
 ```
 
-## GetPQDistanceTableSdc<a name="ZH-CN_TOPIC_0000002518394080"></a>
+## GetPQDistanceTableSdc
 
 **接口定义<a name="section172317194488"></a>**
 
@@ -655,7 +655,7 @@ int main() {
 }
 ```
 
-## GetPQDistanceTableAdc<a name="ZH-CN_TOPIC_0000002549873933"></a>
+## GetPQDistanceTableAdc
 
 **接口定义<a name="section172317194488"></a>**
 
@@ -800,7 +800,7 @@ int main() {
 }
 ```
 
-## GetPQDistance<a name="ZH-CN_TOPIC_0000002518394058"></a>
+## GetPQDistance
 
 **接口定义<a name="section172317194488"></a>**
 
