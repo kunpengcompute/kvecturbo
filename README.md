@@ -32,7 +32,7 @@ kvecturbo
 ```
 
 ## 版本说明
-关于KVecTurbo的版本更新情况请参见[《KVecTurbo版本说明书》](./docs/release_notes.md)。
+关于KVecTurbo的版本更新情况请参见[《版本说明书》](./docs/release_notes.md)。
 
 ## 学习文档
 
