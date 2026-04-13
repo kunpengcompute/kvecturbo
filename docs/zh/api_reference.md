@@ -177,83 +177,6 @@ KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“�
 </tbody>
 </table>
 
-### 使用示例
-
-```c++
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "kvecturbo.h"
-
-int main() {
-    // 参数配置
-    int dim = 128;          // 向量维度
-    int numSamples = 10000; // 训练样本数量
-    int pqM = 8;            // 子空间数（dim需能被pqM整除）
-    int pqKsub = 256;       // 每个子空间的聚类中心数
-    int functype = 1;       // L2距离
-
-    // 准备训练样本数据
-    size_t dataSize = numSamples * dim * sizeof(float);
-    float* sampleData = (float*)malloc(dataSize);
-    if (sampleData == NULL) {
-        printf("内存分配失败\n");
-        return -1;
-    }
-    // ... 填充sampleData训练数据 ...
-    for (int i = 0; i < numSamples * dim; i++) {
-        sampleData[i] = (float)rand() / RAND_MAX;  // 示例：随机填充
-    }
-
-    // 初始化VectorArray结构体
-    VectorArray samples;
-    samples.maxLen = numSamples;
-    samples.length = numSamples;
-    samples.dim = dim;
-    samples.itemSize = dim * sizeof(float);
-    samples.items = (char*)sampleData;
-
-    // 初始化PQParams结构体
-    PQParams params;
-    params.dim = dim;
-    params.pqM = pqM;
-    params.pqKsub = pqKsub;
-    params.functype = functype;
-    params.subItemSize = (dim / pqM) * sizeof(float);
-    
-    // 分配码本存储空间
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
-    params.pqTable = (char*)malloc(pqTableSize);
-    if (params.pqTable == NULL) {
-        printf("码本内存分配失败\n");
-        free(sampleData);
-        return -1;
-    }
-
-    // 计算PQ码本
-    int ret = ComputePQTable(samples, &params);
-
-    if (ret != 0) {
-        printf("计算PQ码本失败，错误码: %d\n", ret);
-        free(sampleData);
-        free(params.pqTable);
-        return -1;
-    }
-
-    printf("成功计算PQ码本\n");
-    printf("  - 子空间数: %d\n", pqM);
-    printf("  - 每子空间聚类中心数: %d\n", pqKsub);
-
-    // ... 使用params.pqTable进行后续量化操作 ...
-
-    // 清理资源
-    free(sampleData);
-    free(params.pqTable);
-
-    return 0;
-}
-```
-
 ## ComputePQTable
 
 **接口定义<a name="section172317194488"></a>**
@@ -311,7 +234,7 @@ int ComputePQTable\(VectorArray samples, PQParams \*params\);
 </tbody>
 </table>
 
-### 使用示例
+**使用示例**
 
 ```c++
 #include <stdio.h>
@@ -465,7 +388,7 @@ int ComputeVectorPQCode\(float \*vector, const PQParams \*params, unsigned char 
 </tbody>
 </table>
 
-### 使用示例
+**使用示例**
 
 ```c++
 #include <stdio.h>
@@ -596,7 +519,7 @@ int GetPQDistanceTableSdc\(const PQParams \*params, float \*pqDistanceTable, siz
 </tbody>
 </table>
 
-### 使用示例
+**使用示例**
 
 ```c++
 #include <stdio.h>
@@ -732,7 +655,7 @@ int GetPQDistanceTableAdc\(float\* vector, const PQParams \*params, float \*pqDi
 </tbody>
 </table>
 
-### 使用示例
+**使用示例**
 
 ```c++
 #include <stdio.h>
@@ -922,7 +845,7 @@ int GetPQDistance\(const unsigned char \*basecode, const unsigned char \*queryco
 </tbody>
 </table>
 
-### 使用示例
+**使用示例**
 
 ```c++
 #include <stdio.h>

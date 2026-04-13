@@ -32,7 +32,7 @@ kvecturbo
 ```
 
 ## 版本说明
-关于KVecTurbo的版本更新情况请参见[《版本说明书》](./docs/release_notes.md)。
+关于KVecTurbo的版本更新情况请参见[《版本说明书》](./docs/zh/release_notes.md)。
 
 ## 学习文档
 
@@ -47,22 +47,22 @@ kvecturbo
 <tbody>
 <tr id="row179181137112015">
 <td class="cellrowborder" valign="top" width="9.780978097809781%" headers="mcps1.1.4.1.1"><p id="p1918123710208">文档</p></td>
-<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p2091893722011"><a href="./docs/release_notes.md">版本说明书</a></p></td>
+<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p2091893722011"><a href="./docs/zh/release_notes.md">版本说明书</a></p></td>
 <td class="cellrowborder" valign="top" width="72.57725772577258%" headers="mcps1.1.4.1.3"><p id="p491893752010">提供KVecTurbo每个发布版本的基础信息和特性更新信息。</p></td>
 </tr>
 <tr id="row939116371143">
 <td class="cellrowborder" valign="top" width="9.780978097809781%" headers="mcps1.1.4.1.1"><p id="p1039163711413">文档</p></td>
-<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p03913372046"><a href="./docs/quick_start.md">快速入门</a></p></td>
+<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p03913372046"><a href="./docs/zh/quick_start.md">快速入门</a></p></td>
 <td class="cellrowborder" valign="top" width="72.57725772577258%" headers="mcps1.1.4.1.3"><p id="p1139217371746">提供KVecTurbo快速入门指导。</p></td>
 </tr>
 <tr id="row2918153732017">
 <td class="cellrowborder" valign="top" width="9.780978097809781%" headers="mcps1.1.4.1.1"><p id="p598512211214">文档</p></td>
-<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p17918337172020"><a href="./docs/installation_guide.md">安装指南</a></p></td>
+<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p17918337172020"><a href="./docs/zh/installation_guide.md">安装指南</a></p></td>
 <td class="cellrowborder" valign="top" width="72.57725772577258%" headers="mcps1.1.4.1.3"><p id="p15918183742018">提供KVecTurbo编译安装方法指导。</p></td>
 </tr>
 <tr id="row12311255193916">
 <td class="cellrowborder" valign="top" width="9.780978097809781%" headers="mcps1.1.4.1.1"><p id="p1176012581392">文档</p></td>
-<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p13760358183920"><a href="./docs/api_reference.md">API参考</a></p></td>
+<td class="cellrowborder" valign="top" width="17.64176417641764%" headers="mcps1.1.4.1.2"><p id="p13760358183920"><a href="./docs/zh/api_reference.md">API参考</a></p></td>
 <td class="cellrowborder" valign="top" width="72.57725772577258%" headers="mcps1.1.4.1.3"><p id="p1776019584395">提供KVecTurbo的API接口定义和接口说明。</p></td>
 </tr>
 </tbody>
