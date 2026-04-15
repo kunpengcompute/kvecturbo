@@ -225,28 +225,28 @@ KVecturbo本次无更新。
 </th>
 </tr>
 </thead>
-<tbody><tr id="row19094280"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p1341193722116"><a name="p1341193722116"></a><a name="p1341193722116"></a><a href="./release_notes.md">《KVecTurbo 版本说明书》</a></p>
+<tbody><tr id="row19094280"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p1341193722116"><a name="p1341193722116"></a><a name="p1341193722116"></a>《KVecTurbo 版本说明书》</p>
 </td>
 <td class="cellrowborder" valign="top" width="38.019999999999996%" headers="mcps1.1.4.1.2 "><p id="p2042183752117"><a name="p2042183752117"></a><a name="p2042183752117"></a>提供KVecTurbo的版本发布信息。</p>
 </td>
 <td class="cellrowborder" valign="top" width="16.96%" headers="mcps1.1.4.1.3 "><p id="p106311311111511"><a name="p106311311111511"></a><a name="p106311311111511"></a>开源仓</p>
 </td>
 </tr>
-<tr id="row619511518199"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p19195195171910"><a name="p19195195171910"></a><a name="p19195195171910"></a><a href="./quick_start.md">《KVecTurbo 快速入门》</a></p>
+<tr id="row619511518199"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p19195195171910"><a name="p19195195171910"></a><a name="p19195195171910"></a>《KVecTurbo 快速入门》</p>
 </td>
 <td class="cellrowborder" valign="top" width="38.019999999999996%" headers="mcps1.1.4.1.2 "><p id="p15918183742018"><a name="p15918183742018"></a><a name="p15918183742018"></a>提供KVecTurbo的快速入门指导。</p>
 </td>
 <td class="cellrowborder" valign="top" width="16.96%" headers="mcps1.1.4.1.3 "><p id="p191951751201919"><a name="p191951751201919"></a><a name="p191951751201919"></a>开源仓</p>
 </td>
 </tr>
-<tr id="row1941037152117"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p5143115122016"><a name="p5143115122016"></a><a name="p5143115122016"></a><a href="./installation_guide.md">《KVecTurbo 安装指南》</a></p>
+<tr id="row1941037152117"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p5143115122016"><a name="p5143115122016"></a><a name="p5143115122016"></a>《KVecTurbo 安装指南》</p>
 </td>
 <td class="cellrowborder" valign="top" width="38.019999999999996%" headers="mcps1.1.4.1.2 "><p id="p1914345202019"><a name="p1914345202019"></a><a name="p1914345202019"></a>提供KVecTurbo编译安装指导。</p>
 </td>
 <td class="cellrowborder" valign="top" width="16.96%" headers="mcps1.1.4.1.3 "><p id="p126311611131518"><a name="p126311611131518"></a><a name="p126311611131518"></a>开源仓</p>
 </td>
 </tr>
-<tr id="row323285510193"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p823275517195"><a name="p823275517195"></a><a name="p823275517195"></a><a href="./api_reference.md">《KVecTurbo API参考》</a></p>
+<tr id="row323285510193"><td class="cellrowborder" valign="top" width="45.019999999999996%" headers="mcps1.1.4.1.1 "><p id="p823275517195"><a name="p823275517195"></a><a name="p823275517195"></a>《KVecTurbo API参考》</p>
 </td>
 <td class="cellrowborder" valign="top" width="38.019999999999996%" headers="mcps1.1.4.1.2 "><p id="p991893772013"><a name="p991893772013"></a><a name="p991893772013"></a>提供KVecTurbo的API接口定义和接口说明。</p>
 </td>
