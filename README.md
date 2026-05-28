@@ -23,12 +23,13 @@ kvecturbo
 │   └── kvecturbo.cpp        // K‑means、PQ编码/搜索、SIMD加速等
 ├── test                     // ut测试
 └── docs
- ├── public_sys-resources
- ├── api_reference.md             // API参考
- ├── installation_guide.md        // 安装指南
- ├── quick_start.md               // 快速上手
- ├── release_notes.md             // 版本说明书
- └── LICENSE
+ ├──zh
+   ├── public_sys-resources
+   ├── api_reference.md             // API参考
+   ├── installation_guide.md        // 安装指南
+   ├── quick_start.md               // 快速上手
+   ├── release_notes.md             // 版本说明书
+└── LICENSE
 ```
 
 ## 版本说明
