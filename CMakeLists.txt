@@ -11,20 +11,20 @@ target_include_directories(kvecturbo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include 
 
 # 添加编译选项
 target_compile_options(kvecturbo PRIVATE
-    -Wall                       # 启用所有警告
-    -Wextra                     # 启用额外警告
-    -O3                         # 优化编译
-    -fPIC                       # 生成位置无关代码（PIC），用于共享库
-    ${OpenMP_CXX_FLAGS}         # 添加 OpenMP 编译标志
-    -Wl,-z,relro,-z,now         # 设置链接器选项以增强安全性
-    -fstack-protector-strong    # 启用栈保护
-    -ftrapv                     # 整数溢出检测
-    -D_FORTIFY_SOURCE=2         # 缓冲区溢出防护
-    -fvisibility=hidden         # 隐藏非对外接口
+    -Wall                               # 启用所有警告
+    -Wextra                             # 启用额外警告
+    -O3                                 # 优化编译
+    -fPIC                               # 生成位置无关代码（PIC），用于共享库
+    ${OpenMP_CXX_FLAGS}                 # 添加 OpenMP 编译标志
+    -Wl,-z,relro,-z,now,-z,noexecstack  # 设置链接器选项以增强安全性
+    -fstack-protector-strong            # 启用栈保护
+    -ftrapv                             # 整数溢出检测
+    -D_FORTIFY_SOURCE=2                 # 缓冲区溢出防护
+    -fvisibility=hidden                 # 隐藏非对外接口
 )
 
 # 设置链接选项
-target_link_options(kvecturbo PUBLIC -s -Wl,-z,relro,-z,now -L${BINARYLIBS_PATH}/kernel/platform/Huawei_Secure_C/comm/lib/ -lsecurec)
+target_link_options(kvecturbo PUBLIC -s -Wl,-z,relro,-z,now,-z,noexecstack -L${BINARYLIBS_PATH}/kernel/platform/Huawei_Secure_C/comm/lib/ -lsecurec)
 
 # 链接 OpenMP 库
 target_link_libraries(kvecturbo PRIVATE OpenMP::OpenMP_CXX)
