@@ -13,7 +13,7 @@
 </th>
 <th class="cellrowborder" valign="top" width="17.34%" id="mcps1.2.6.1.4"><p id="zh-cn_topic_0000002483307829_p196922434215"><a name="zh-cn_topic_0000002483307829_p196922434215"></a><a name="zh-cn_topic_0000002483307829_p196922434215"></a>Compiler</p>
 </th>
-Other <th class="cellrowborder" valign="top" width="27.250000000000004%" id="mcps1.2.6.1.5"><p id="zh-cn_topic_0000002483307829_p1769219435210"><a name="zh-cn_topic_0000002483307829_p1769219435210"></a><a name="zh-cn_topic_0000002483307829_p1769219435210"></a>Remarks</p>
+<th class="cellrowborder" valign="top" width="27.250000000000004%" id="mcps1.2.6.1.5"><p id="zh-cn_topic_0000002483307829_p1769219435210"><a name="zh-cn_topic_0000002483307829_p1769219435210"></a><a name="zh-cn_topic_0000002483307829_p1769219435210"></a>Remarks</p>
 </th>
 </tr>
 </thead>

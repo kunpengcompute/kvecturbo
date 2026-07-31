@@ -9,7 +9,7 @@
 
 KVecTurbo is a proprietary vector retrieval acceleration component and can work with the openGauss vector database. It quantifies and compresses high-dimensional vectors to quickly obtain the near neighbors of a query. In addition, KVecTurbo uses the SIMD instructions to accelerate distance calculation for multidimensional vector nearest neighbor search.
 
-KVecTurbo is applicable to Kunpeng 920 processors and supports NEON instructions (128-bit width).
+KVecTurbo is applicable to Kunpeng 920 new model processor and supports NEON instructions (128-bit width).
 
 ## Directory Structure
 

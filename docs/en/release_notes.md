@@ -36,7 +36,7 @@
 </th>
 <th class="cellrowborder" valign="top" width="17.34%" id="mcps1.2.6.1.4"><p id="zh-cn_topic_0000002483307829_p196922434215"><a name="zh-cn_topic_0000002483307829_p196922434215"></a><a name="zh-cn_topic_0000002483307829_p196922434215"></a>Compiler</p>
 </th>
-Other <th class="cellrowborder" valign="top" width="27.250000000000004%" id="mcps1.2.6.1.5"><p id="zh-cn_topic_0000002483307829_p1769219435210"><a name="zh-cn_topic_0000002483307829_p1769219435210"></a><a name="zh-cn_topic_0000002483307829_p1769219435210"></a>Remarks</p>
+<th class="cellrowborder" valign="top" width="27.250000000000004%" id="mcps1.2.6.1.5"><p id="zh-cn_topic_0000002483307829_p1769219435210"><a name="zh-cn_topic_0000002483307829_p1769219435210"></a><a name="zh-cn_topic_0000002483307829_p1769219435210"></a>Remarks</p>
 </th>
 </tr>
 </thead>
@@ -121,7 +121,7 @@ Starting from version 25.2.RC1, BoostKit has officially frozen component-level v
 
 **New Features<a name="section11862975"></a>**
 
-- The KVecTurbo sub-library code is open-sourced and can be used only after being compiled. The source code is released on Gitee, and the code branch version is `v1.1.0`.
+- The KVecTurbo sub-library code is open-sourced and can be used only after being compiled. The source code is released on GitCode, and the code branch version is `v1.1.0`.
 - KVecTurbo supports datasets with over ten million vectors, having increased the upper limit on base library capacity. However, setting the vector count excessively high can lead to memory allocation failures due to system resource constraints.
 
 **Modified Features<a name="section16450949161512"></a>**

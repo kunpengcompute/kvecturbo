@@ -177,7 +177,7 @@ The parameters used by the KVecTurbo APIs involve the `VectorArray` and `PQParam
 </tbody>
 </table>
 
-### Example
+**Example**
 
 ```c++
 #include <stdio.h>
@@ -311,7 +311,7 @@ Calculates the PQ codebook.
 </tbody>
 </table>
 
-### Example
+**Example**
 
 ```c++
 #include <stdio.h>
@@ -465,7 +465,7 @@ Quantizes the input vector based on the PQ codebook.
 </tbody>
 </table>
 
-### Example
+**Example**
 
 ```c++
 #include <stdio.h>
@@ -596,7 +596,7 @@ Calculates the PQ SDC distance table, that is, calculates the distance between t
 </tbody>
 </table>
 
-### Example
+**Example**
 
 ```c++
 #include <stdio.h>
@@ -732,7 +732,7 @@ Calculates the PQ ADC distance table, that is, calculates the distance between t
 </tbody>
 </table>
 
-### Example
+**Example**
 
 ```c++
 #include <stdio.h>
@@ -922,7 +922,7 @@ Calculates the PQ ADC or SDC distance. If querycode == NULL, the ADC distance is
 </tbody>
 </table>
 
-### Example
+**Example**
 
 ```c++
 #include <stdio.h>
