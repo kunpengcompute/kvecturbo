@@ -85,8 +85,4 @@ KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开
 
 ## 致谢
 
-KVecTurbo由华为公司的下列部门联合贡献：
-
-- 鲲鹏计算Boostkit开发部
-
 感谢来自社区的每一个PR，欢迎贡献KVecTurbo！
