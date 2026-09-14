@@ -14,6 +14,7 @@ target_compile_options(kvecturbo PRIVATE
     -Wall                               # 启用所有警告
     -Wextra                             # 启用额外警告
     -O3                                 # 优化编译
+    -DNDEBUG                            # 禁用 assert（Release 模式）
     -fPIC                               # 生成位置无关代码（PIC），用于共享库
     ${OpenMP_CXX_FLAGS}                 # 添加 OpenMP 编译标志
     -Wl,-z,relro,-z,now,-z,noexecstack  # 设置链接器选项以增强安全性

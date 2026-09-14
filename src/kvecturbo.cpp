@@ -3,7 +3,6 @@
  */
 #include "kvecturbo.h"
 
-#include <securec.h>
 #include <algorithm>
 #include <arm_neon.h>
 #include <atomic>
@@ -21,6 +20,7 @@
 #include <omp.h>
 #include <queue>
 #include <random>
+#include <securec.h>
 #include <vector>
 
 namespace PQHead {
@@ -56,30 +56,21 @@ struct Varattrib1b {
  * @param len Length to align
  * @return Aligned size
  */
-uintptr_t TYPEALIGN(size_t alignVal, size_t len)
-{
-    return (len + (alignVal - 1)) & ~(alignVal - 1);
-}
+uintptr_t TYPEALIGN(size_t alignVal, size_t len) { return (len + (alignVal - 1)) & ~(alignVal - 1); }
 
 /*
  * @brief Calculate the maximum aligned size
  * @param len Length to align
  * @return Maximum aligned size
  */
-uintptr_t MAXALIGN(size_t len)
-{
-    return TYPEALIGN(MAXIMUM_ALIGNOF, len);
-}
+uintptr_t MAXALIGN(size_t len) { return TYPEALIGN(MAXIMUM_ALIGNOF, len); }
 
 /*
  * @brief Calculate the size of a vector based on its dimension
  * @param dim Vector dimension
  * @return Size of the vector
  */
-size_t VECTOR_SIZE(int dim)
-{
-    return offsetof(Vector, x) + sizeof(float) * dim;
-}
+size_t VECTOR_SIZE(int dim) { return offsetof(Vector, x) + sizeof(float) * dim; }
 
 /*
  * @brief Get the address of a vector in the array at the specified offset
@@ -121,26 +112,19 @@ public:
      * @brief Constructor for random number generator
      * @param seed Initial seed value (default: 42)
      */
-    explicit kvecturbo(unsigned int seed = 42) : mt(seed), dist(0.0f, 1.0f)
-    {}
+    explicit kvecturbo(unsigned int seed = 42) : mt(seed), dist(0.0f, 1.0f) {}
 
     /*
      * @brief Generate a random float value
      * @return Random float value between 0.0f and 1.0f
      */
-    float operator()()
-    {
-        return dist(mt);
-    }
+    float operator()() { return dist(mt); }
 
     /*
      * @brief Get the underlying random engine
      * @return Reference to the random engine
      */
-    std::mt19937 &GetEngine()
-    {
-        return mt;
-    }
+    std::mt19937 &GetEngine() { return mt; }
 
 private:
     std::mt19937 mt;
@@ -204,7 +188,7 @@ static inline int VectorArrayCopy(VectorArray arr, int offset, float *src, int n
         return -1;
     }
     size_t bytesToCopy = newDim * sizeof(float);
-    size_t dstSize = arr->itemSize;
+    size_t dstSize = arr->itemSize - offsetof(Vector, x);
     errno_t result = memcpy_s(dst, dstSize, src, bytesToCopy);
     if (result != 0) {
         std::cerr << "Error: memcpy_s failed with dst and src: " << result << std::endl;
@@ -255,7 +239,7 @@ void VectorArrayRelease(VectorArray arrays)
     }
     if (arrays->items != nullptr) {
         free(arrays->items);
-		arrays->items = nullptr;
+        arrays->items = nullptr;
     }
     free(arrays);
 }
@@ -379,10 +363,11 @@ int InitCenters(const float *samples, float *centers, int numSamples, int numCen
 
     /* Select the first numCenters samples as initial centers */
     for (int i = 0; i < numCenters; ++i) {
-        size_t remainingSize = (numCenters - i) * dimension * sizeof(float);
+        size_t remainingSize = static_cast<size_t>(numCenters - i) * static_cast<size_t>(dimension) * sizeof(float);
         int idx = sampleIndices[i];
         errno_t result =
-            memcpy_s(&centers[i * dimension], remainingSize, &samples[idx * dimension], sizeof(float) * dimension);
+            memcpy_s(&centers[static_cast<size_t>(i) * static_cast<size_t>(dimension)], remainingSize,
+                     &samples[static_cast<size_t>(idx) * static_cast<size_t>(dimension)], sizeof(float) * dimension);
         if (result != 0) {
             /* Handle error. The function failed. */
             std::cerr << "Error: memcpy_s failed with centers and samples: " << result << std::endl;
@@ -402,7 +387,7 @@ int InitCenters(const float *samples, float *centers, int numSamples, int numCen
  * @param dimensions Vector dimension
  */
 void mergeClusterAggregate(float *agg, std::vector<int> &centerCounts, const std::vector<float> &threadAgg,
-    const std::vector<int> &threadCounts, int c, int dimensions)
+                           const std::vector<int> &threadCounts, int c, int dimensions)
 {
     if (threadCounts[c] > 0) {
         float *aggPtr = &agg[c * dimensions];
@@ -425,8 +410,8 @@ void mergeClusterAggregate(float *agg, std::vector<int> &centerCounts, const std
  * @param dimensions Vector dimension
  */
 void mergeThreadAggregates(const std::vector<std::vector<float>> &threadAgg,
-    const std::vector<std::vector<int>> &threadCounts, float *agg, std::vector<int> &centerCounts, int numThreads,
-    int numCenters, int dimensions)
+                           const std::vector<std::vector<int>> &threadCounts, float *agg,
+                           std::vector<int> &centerCounts, int numThreads, int numCenters, int dimensions)
 {
     for (int t = 0; t < numThreads; t++) {
         for (int c = 0; c < numCenters; c++) {
@@ -444,8 +429,8 @@ void mergeThreadAggregates(const std::vector<std::vector<float>> &threadAgg,
  * @param localCounts Local count of samples per center
  * @param dimensions Vector dimension
  */
-void accumulateSampleToCenter(
-    const float *sample, int center, std::vector<float> &localAgg, std::vector<int> &localCounts, int dimensions)
+void accumulateSampleToCenter(const float *sample, int center, std::vector<float> &localAgg,
+                              std::vector<int> &localCounts, int dimensions)
 {
     if (center >= 0 && center < static_cast<int>(localCounts.size())) {
         float *x = &localAgg[center * dimensions];
@@ -467,11 +452,11 @@ void accumulateSampleToCenter(
  * @param dimensions Vector dimension
  */
 void SumCenters(const float *samples, float *agg, const int *closestCenters, int numSamples, int numCenters,
-    std::vector<int> &centerCounts, int dimensions)
+                std::vector<int> &centerCounts, int dimensions)
 {
     /* Use each thread's local aggregation buffer */
     int numThreads = omp_get_max_threads();
-    size_t numCentersD = static_cast<size_t>(numCenters * dimensions);
+    size_t numCentersD = static_cast<size_t>(numCenters) * static_cast<size_t>(dimensions);
     std::vector<std::vector<float>> threadAgg(numThreads, std::vector<float>(numCentersD, 0.0f));
     std::vector<std::vector<int>> threadCounts(numThreads, std::vector<int>(numCenters, 0));
 
@@ -510,7 +495,7 @@ void SumCenters(const float *samples, float *agg, const int *closestCenters, int
  * @return 0 on success, -1 on failure
  */
 int handleClusterOrInitializeRandomly(float *agg, float *newCenters, std::vector<int> &centerCounts, int j,
-    int dimensions, int numCenters, kvecturbo &randGen, size_t *newCentersSize)
+                                      int dimensions, int numCenters, kvecturbo &randGen, size_t *newCentersSize)
 {
     int maxCenter = -1;
     int maxCount = 0;
@@ -560,8 +545,8 @@ int handleClusterOrInitializeRandomly(float *agg, float *newCenters, std::vector
                 goto critical_end;
             }
 
-            result = memcpy_s(
-                &newCenters[maxCenter * dimensions], *newCentersSize, maxCenterSumBuffer, dimensions * sizeof(float));
+            result = memcpy_s(&newCenters[maxCenter * dimensions], *newCentersSize, maxCenterSumBuffer,
+                              dimensions * sizeof(float));
             if (result != 0) {
                 std::cerr << "Error: memcpy_s failed with newCenters and maxCenterSumBuffer: " << result << std::endl;
                 errCondition.store(true);
@@ -586,14 +571,14 @@ int handleClusterOrInitializeRandomly(float *agg, float *newCenters, std::vector
  * @param dimensions Vector dimension
  */
 int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::vector<int> &centerCounts,
-    const int *closestCenters, int numSamples, int numCenters, int dimensions)
+                      const int *closestCenters, int numSamples, int numCenters, int dimensions)
 {
     if (!samples || !agg || !newCenters || !closestCenters || numSamples <= 0 || numCenters <= 0 || dimensions <= 0) {
         std::cerr << "Error: Invalid input parameters" << std::endl;
         return -1;
     }
 
-    size_t numCentersD = static_cast<size_t>(numCenters * dimensions);
+    size_t numCentersD = static_cast<size_t>(numCenters) * static_cast<size_t>(dimensions);
     std::fill(agg, agg + numCentersD, 0.0f);
     std::fill(centerCounts.begin(), centerCounts.end(), 0);
 
@@ -616,9 +601,9 @@ int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::
             if (errCondition.load())
                 break;
 
-            size_t offset = j * dimensions;
+            size_t offset = static_cast<size_t>(j) * static_cast<size_t>(dimensions);
             size_t remainingBytes = (numCentersD - offset) * sizeof(float);
-            float *sumBuffer = agg + j * dimensions;
+            float *sumBuffer = agg + offset;
 
             if (centerCounts[j] > 0) {
                 float norm = 1.0f / centerCounts[j];
@@ -636,8 +621,8 @@ int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::
                     break;
                 }
             } else {
-                if (handleClusterOrInitializeRandomly(
-                        agg, newCenters, centerCounts, j, dimensions, numCenters, randGen, &remainingBytes) != 0) {
+                if (handleClusterOrInitializeRandomly(agg, newCenters, centerCounts, j, dimensions, numCenters, randGen,
+                                                      &remainingBytes) != 0) {
 #pragma omp critical
                     {
                         std::cerr << "Error: Failed to handle empty cluster " << j << std::endl;
@@ -679,18 +664,29 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
     const size_t numSamplesD = static_cast<size_t>(numSamples) * dimensions;
     const size_t numCentersD = static_cast<size_t>(numCenters) * dimensions;
 
-    /* Allocate memory with proper error handling */
-    std::unique_ptr<float[]> samplesData;
-    std::unique_ptr<float[]> centersData;
-    std::unique_ptr<float[]> newCentersData;
-    try {
-        samplesData = std::make_unique<float[]>(numSamplesD);
-        centersData = std::make_unique<float[]>(numCentersD);
-        newCentersData = std::make_unique<float[]>(numCentersD);
-    } catch (const std::bad_alloc &e) {
-        std::cerr << "Error: Memory allocation failed - " << e.what() << std::endl;
+    /* Allocate memory with 16-byte alignment for NEON SIMD */
+    constexpr size_t NEON_ALIGN = 16;
+    auto deleter = [](float *p) { free(p); };
+    std::unique_ptr<float[], decltype(deleter)> samplesData(nullptr, deleter);
+    std::unique_ptr<float[], decltype(deleter)> centersData(nullptr, deleter);
+    std::unique_ptr<float[], decltype(deleter)> newCentersData(nullptr, deleter);
+
+    size_t sampleAllocSize = ((numSamplesD * sizeof(float) + NEON_ALIGN - 1) / NEON_ALIGN) * NEON_ALIGN;
+    size_t centerAllocSize = ((numCentersD * sizeof(float) + NEON_ALIGN - 1) / NEON_ALIGN) * NEON_ALIGN;
+
+    void *rawSamples = aligned_alloc(NEON_ALIGN, sampleAllocSize);
+    void *rawCenters = aligned_alloc(NEON_ALIGN, centerAllocSize);
+    void *rawNewCenters = aligned_alloc(NEON_ALIGN, centerAllocSize);
+    if (!rawSamples || !rawCenters || !rawNewCenters) {
+        free(rawSamples);
+        free(rawCenters);
+        free(rawNewCenters);
+        std::cerr << "Error: Memory allocation failed" << std::endl;
         return -1;
     }
+    samplesData.reset(static_cast<float *>(rawSamples));
+    centersData.reset(static_cast<float *>(rawCenters));
+    newCentersData.reset(static_cast<float *>(rawNewCenters));
 
     /* Initialize arrays */
     std::fill(samplesData.get(), samplesData.get() + numSamplesD, 0.0f);
@@ -713,12 +709,12 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
             }
             continue;
         }
-        size_t remainingSize = static_cast<size_t>((numSamples - i) * dimensions * sizeof(float));
+        size_t remainingSize = static_cast<size_t>(numSamples - i) * static_cast<size_t>(dimensions) * sizeof(float);
         if (remainingSize > SECUREC_MEM_MAX_LEN) {
-			remainingSize = SECUREC_MEM_MAX_LEN;
-		}
-        errno_t result =
-            memcpy_s(samplesData.get() + i * dimensions, remainingSize, vec->x, dimensions * sizeof(float));
+            remainingSize = SECUREC_MEM_MAX_LEN;
+        }
+        errno_t result = memcpy_s(samplesData.get() + static_cast<size_t>(i) * static_cast<size_t>(dimensions),
+                                  remainingSize, vec->x, dimensions * sizeof(float));
         if (result != 0) {
             std::cerr << "Error: memcpy_s failed with samplesData and vec->x: " << result << std::endl;
             errCondition.store(true);
@@ -764,14 +760,8 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
         }
 
         /* Compute new cluster centers */
-        if (ComputeNewCenters(samplesData.get(),
-                agg.get(),
-                newCentersData.get(),
-                centerCounts,
-                closestCenters.get(),
-                numSamples,
-                numCenters,
-                dimensions) != 0) {
+        if (ComputeNewCenters(samplesData.get(), agg.get(), newCentersData.get(), centerCounts, closestCenters.get(),
+                              numSamples, numCenters, dimensions) != 0) {
             std::cerr << "Error: Failed to Compute New Centers" << std::endl;
             return -1;
         }
@@ -790,10 +780,11 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
         Vector *vec = InitVector(dimensions);
         if (vec == nullptr) {
             std::cerr << "Error: InitVector failed and returned nullptr" << std::endl;
+            centers->length = i;
             return -1;
         }
-        errno_t result = memcpy_s(
-            vec->x, dimensions * sizeof(float), centersData.get() + i * dimensions, dimensions * sizeof(float));
+        errno_t result = memcpy_s(vec->x, dimensions * sizeof(float), centersData.get() + i * dimensions,
+                                  dimensions * sizeof(float));
         if (result != 0) {
             std::cerr << "Error: memcpy_s failed with vec->x and centersData: " << result << std::endl;
             free(vec);
@@ -813,7 +804,7 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
             return -1;
         }
         free(vec);
-		vec = nullptr;
+        vec = nullptr;
     }
 
     centers->length = numCenters;
@@ -1025,10 +1016,8 @@ int ComputePQTable(VectorArray samples, PQParams *params)
 
             /* Calculate target position in PQ table */
             size_t remainingSize = (pqKsub - i) * centers->itemSize;
-            errno_t result = memcpy_s(pqTable + (m * pqKsub + i) * centers->itemSize,
-                remainingSize,
-                static_cast<void *>(vec),
-                centers->itemSize);
+            errno_t result = memcpy_s(pqTable + (m * pqKsub + i) * centers->itemSize, remainingSize,
+                                      static_cast<void *>(vec), centers->itemSize);
             if (result != 0) {
                 std::cerr << "Error: memcpy_s failed with pqTable and vec: " << result << std::endl;
                 VectorArrayRelease(centers);
@@ -1059,8 +1048,8 @@ int ComputePQTable(VectorArray samples, PQParams *params)
  * @return 0 on success, -1 on failure
  */
 int GetPQDistance(const unsigned char *basecode, const unsigned char *querycode, const PQParams *params,
-    const float *pqDistanceTable, float *pqDistance, size_t basecode_size, size_t querycode_size,
-    size_t pqDistanceTable_size, size_t pqDistance_size)
+                  const float *pqDistanceTable, float *pqDistance, size_t basecode_size, size_t querycode_size,
+                  size_t pqDistanceTable_size, size_t pqDistance_size)
 {
     if (basecode == nullptr || params == nullptr || pqDistanceTable == nullptr || pqDistance == nullptr) {
         std::cerr << "Error: GetPQDistance input with nullptr" << std::endl;
@@ -1137,7 +1126,7 @@ int GetPQDistance(const unsigned char *basecode, const unsigned char *querycode,
         if (querycode_size < static_cast<size_t>(pqM) ||
             pqDistanceTable_size < static_cast<size_t>(pqM * pqKsub * pqKsub)) {
             std::cerr << "Error: invalid querycode or pqDistanceTable values" << std::endl;
-			return -1;
+            return -1;
         }
         size_t offset = 0;
         for (int k = 0; k < pqM; k++) {
@@ -1392,4 +1381,4 @@ int GetPQDistanceTableAdc(float *vector, const PQParams *params, float *pqDistan
     }
     return 0;
 }
-}  // namespace PQHead
+} // namespace PQHead
