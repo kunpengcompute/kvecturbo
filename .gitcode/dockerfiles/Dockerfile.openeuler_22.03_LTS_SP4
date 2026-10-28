@@ -1,0 +1,53 @@
+FROM swr.cn-north-4.myhuaweicloud.com/cloud_boostkit/openeuler-22.03-lts-sp4:latest
+
+RUN set -ex && rm -rf /etc/yum.repos.d/* && touch /etc/yum.repos.d/openEuler.repo \
+&& echo "[openEuler-everything]                                                                                            " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "name=openEuler-everything                                                                                         " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "baseurl=http://repo.openeuler.org/openEuler-22.03-LTS-SP4/everything/aarch64/                                     " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "enabled=1                                                                                                         " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "gpgcheck=0                                                                                                        " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "gpgkey=http://repo.openeuler.org/openEuler-22.03-LTS-SP4/everything/aarch64/RPM-GPG-KEY-openEuler                 " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "                                                                                                                  " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "[openEuler-EPOL]                                                                                                  " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "name=openEuler-epol                                                                                               " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "baseurl=http://repo.openeuler.org/openEuler-22.03-LTS-SP4/EPOL/main/aarch64/                                      " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "enabled=1                                                                                                         " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "gpgcheck=0                                                                                                        " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "                                                                                                                  " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "[openEuler-update]                                                                                                " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "name=openEuler-update                                                                                             " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "baseurl=http://repo.openeuler.org/openEuler-22.03-LTS-SP4/update/aarch64/                                         " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "enabled=1                                                                                                         " >> /etc/yum.repos.d/openEuler.repo \
+&& echo "gpgcheck=0                                                                                                        " >> /etc/yum.repos.d/openEuler.repo \
+&& yum clean all && yum makecache \
+&& yum install -y gcc g++ make cmake boost-devel sudo zip unzip wget curl tar git python3 python3-pip python3-requests python3-devel dos2unix glibc-locale-source libgomp rpm-build \
+&& mkdir -p /opt/buildtools/binarylibs && pushd /opt/buildtools/binarylibs \
+&& wget https://opengauss.obs.cn-south-1.myhuaweicloud.com/latest/binarylibs/gcc10.3/openGauss-third_party_binarylibs_openEuler_2203_arm.tar.gz --no-check-certificate \
+&& tar -zxvf openGauss-third_party_binarylibs_openEuler_2203_arm.tar.gz && rm -rf openGauss-third_party_binarylibs_openEuler_2203_arm.tar.gz && popd \
+&& pushd /opt/buildtools \
+&& git clone https://gitee.com/mirrors/googletest.git -b v1.14.0 && mkdir -p googletest/build && pushd googletest/build && cmake .. && make -j16 && make install && popd && popd \
+&& echo "Install Lcov" \
+&& pushd /opt/buildtools/ && wget -q https://github.com/linux-test-project/lcov/releases/download/v1.16/lcov-1.16.tar.gz && tar -xf lcov-1.16.tar.gz && rm -rf lcov-1.16.tar.gz \
+&& pushd lcov-1.16 && make rpms && rpm -ivh lcov-*.noarch.rpm && popd && popd
+
+ENV LANG=C.utf8 \
+    LC_ALL=C.utf8 \
+    LANGUAGE=C.utf8
+
+ENV BoostKit_USER=boostkit \
+    BoostKit_GROUP=boostkit \
+    BoostKit_UID=1000 \
+    BoostKit_GID=1000 \
+    AGENT_WORKDIR=/home/boostkit/agent
+
+RUN set -x \
+    && groupadd -g "${BoostKit_GID}" "${BoostKit_GROUP}" \
+    && useradd -c "Jenkins user" -d "/home/${BoostKit_USER}" -u "${BoostKit_UID}" -g "${BoostKit_GID}" -m "${BoostKit_USER}" \
+    && echo "${BoostKit_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+    && mkdir -p "/home/${BoostKit_USER}/.boostkit" "${AGENT_WORKDIR}" /tmp \
+    && chown -R "${BoostKit_UID}:${BoostKit_GID}" /tmp /opt ${AGENT_WORKDIR} \
+    && chmod -R 755 /opt ${AGENT_WORKDIR}
+
+USER ${BoostKit_USER}
+VOLUME ["/home/boostkit/.boostkit","/home/boostkit/agent"]
+WORKDIR ${AGENT_WORKDIR}
