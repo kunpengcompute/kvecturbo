@@ -24,11 +24,8 @@ concurrency: # 并发控制
     events: [mr_id]        # 抢占粒度=按MR隔离：同一MR的新推送取消该MR的旧运行，不同MR互不影响
 
 permissions:
-  project: read
   repository: read
-  id-token: write
-  pr: write
-  note: write
+  pr: read
 
 stages:
   stage0:  #stage identifier 仅支持大小写英文字母、数字、“-”或“_”，长度介于1~128之间
@@ -77,13 +74,13 @@ stages:
               base: ${{ atomgit.event.pull_request.base.ref }}
               repo: ${{ atomgit.repository }}
               number: ${{ env.pr_id }}
-              token: ${{ secrets.GIT_TOKEN }}
               list-files: json
               predicate-quantifier: every
               filters: |
                 changed:
                   - '**'
                 non-doc:
+                  - '!docs/**'
                   - '!**/*.md'
                   - '!**/*.rst'
                   - '!**/*.log'
@@ -107,41 +104,30 @@ stages:
         steps:
           - name: Checkout
             uses: checkout
-            with: # 啥都不用写, 默认下载当前流水线触发仓
-            # repository: 'https://test.gitcode.net/test_enterprise/label_test.git'
-            #拒绝从 'pull_request_target' 工作流中检出 fork 拉取请求代码.
-            #拦截原因: ref('refs/merge-requests/584/merge')匹配PR的预合并分支. 此工作流使用基仓库的 token、secrets 和 runner 访问权限运行,
-            #在可信上下文中获取和执行 fork 代码通常会导致 "pwn request" 漏洞. 如需检出, 请评估风险并在 checkout 步骤设置 'allow-unsafe-pr-checkout: true'
+            with:
               allow-unsafe-pr-checkout: true
               ref: refs/merge-requests/${{ env.pr_id }}/merge
-            # path: repo
-            # token: 代码仓token
-            # ssh-key: ""
-            # endpoint_id: ""
-            # fetch-depth: 1
-            # submodules: "false"
-            # lfs: "false"
-            # clean: "true"
           - name: Setup Python
             uses: setup-python
             with:
               python-version: "3.14"
           - name: Run pre-commit
             uses: openlibing/pre-commit-action@v1.0.0
-            # 不传 extra_args 时为自动模式：PR 事件检查 PR 增量文件，非 PR 事件全量检查
-            # with:
-              # extra_args: --all-files
-              # 指定检查文件时必须写成单个以 -- 开头的 token：
-              # extra_args: --files=path/to/file
       sca-pr:
+        name: sca-pr
         runs-on: [ "ubuntu-latest", "x64", "slim" ]
+        permissions:
+          id-token: write
         steps:
           - name: Run SCA PR scan
             uses: openlibing/sca-action/sca-pr-action@v1.0.0
             with:
               project-name: "boostkit"
-      malicious-scan:
+      AntiPoison-scan:
+        name: AntiPoison-scan
         runs-on: [ "ubuntu-latest", "x64", "slim" ]
+        permissions:
+          id-token: write
         steps:
           - name: Run malicious code scan
             uses: openlibing/malicious-code-scan-action/malicious-code-pr-scan-action@v1.0.0
