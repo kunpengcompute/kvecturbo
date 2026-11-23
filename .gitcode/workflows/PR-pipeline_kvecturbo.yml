@@ -13,7 +13,7 @@ on:
 env:
   pr_id: ${{ atomgit.event.pull_request.number }}
   owner_name: boostkit
-  target_branch: ${{ atomgit.event.pull_request.target_branch }}
+  target_branch: ${{ atomgit.event.pull_request.base.ref }}
 
 concurrency: # 并发控制
   enable: true             # 启用并发控制
@@ -22,10 +22,6 @@ concurrency: # 并发控制
   preemption:              # 抢占策略：新事件到来时取消同组正在运行的旧运行
     enable: true           # 启用抢占（默认true）
     events: [mr_id]        # 抢占粒度=按MR隔离：同一MR的新推送取消该MR的旧运行，不同MR互不影响
-
-permissions:
-  repository: read
-  pr: read
 
 stages:
   stage0:  #stage identifier 仅支持大小写英文字母、数字、“-”或“_”，长度介于1~128之间
@@ -100,17 +96,21 @@ stages:
                 echo "need_build=no" >> "$ATOMGIT_OUTPUT"
               fi
       pre-commit:
-        runs-on: ["ubuntu-latest", "x64", "slim"]
+        runs-on: [ self-hosted, os=euler, arch=arm64, type=pr, flavor=small ]
+        container:
+          image: swr.cn-north-4.myhuaweicloud.com/cloud_boostkit/openeuler_24.03_lts_sp3:pre-commit_arm_01
         steps:
           - name: Checkout
             uses: checkout
             with:
               allow-unsafe-pr-checkout: true
               ref: refs/merge-requests/${{ env.pr_id }}/merge
-          - name: Setup Python
-            uses: setup-python
-            with:
-              python-version: "3.14"
+          - name: install gitleaks
+            run: |
+              cd ${ATOMGIT_WORKSPACE}
+              wget -q https://pytorch-package.obs.cn-north-4.myhuaweicloud.com/pta-codecheck/gitleaks
+              chmod +x gitleaks
+              cd -
           - name: Run pre-commit
             uses: openlibing/pre-commit-action@v1.0.0
       sca-pr:
@@ -118,6 +118,7 @@ stages:
         runs-on: [ "ubuntu-latest", "x64", "slim" ]
         permissions:
           id-token: write
+          repository: read
         steps:
           - name: Run SCA PR scan
             uses: openlibing/sca-action/sca-pr-action@v1.0.0
@@ -128,6 +129,7 @@ stages:
         runs-on: [ "ubuntu-latest", "x64", "slim" ]
         permissions:
           id-token: write
+          repository: read
         steps:
           - name: Run malicious code scan
             uses: openlibing/malicious-code-scan-action/malicious-code-pr-scan-action@v1.0.0
@@ -140,9 +142,8 @@ stages:
         uses: .gitcode/workflows/pr_build.yml
         with:
           CP_DOCKER_IMG: "swr.cn-north-4.myhuaweicloud.com/cloud_boostkit/openeuler22.03_lts_sp4:arm_kvecturbo_v1.0"
-          runs_on_arch: "arm"
-          pr_id: "${{ atomgit.event.pull_request.number }}"
-          target_branch: "${{ atomgit.event.pull_request.target_branch }}"
+          pr_id: "${{ env.pr_id }}"
+          target_branch: "${{ env.target_branch }}"
       ut:
         name: ut
         needs: [ Detect_file_changes ]
@@ -150,9 +151,8 @@ stages:
         uses: .gitcode/workflows/pr_ut.yml
         with:
           CP_DOCKER_IMG: "swr.cn-north-4.myhuaweicloud.com/cloud_boostkit/openeuler22.03_lts_sp4:arm_kvecturbo_v1.0"
-          runs_on_arch: "arm"
-          pr_id: "${{ atomgit.event.pull_request.number }}"
-          target_branch: "${{ atomgit.event.pull_request.target_branch }}"
+          pr_id: "${{ env.pr_id }}"
+          target_branch: "${{ env.target_branch }}"
 
 post:
   jobs:
@@ -166,3 +166,4 @@ post:
             add_labels: ${{ pipeline.upstream_status == 'COMPLETED' && 'ci-pipeline-passed' || 'ci-pipeline-failed' }}
             remove_labels: ci-pipeline-running,${{ pipeline.upstream_status == 'COMPLETED' && 'ci-pipeline-failed' || 'ci-pipeline-passed' }}
             token: ${{secrets.PR_LABEL_TOKEN}}
+

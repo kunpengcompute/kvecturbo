@@ -9,10 +9,6 @@ on:
       pr_id:
         required: true
         type: string
-      runs_on_arch:
-        required: false
-        type: string
-        default: "arm"
       target_branch:
         required: true
         type: string
@@ -38,6 +34,5 @@ jobs:
         id: exec_shell_step
         run: |-
             set -ex
-            lcov --version
-            export BINARYLIBS=/opt/buildtools/binarylibs/openGauss-third_party_binarylibs_openEuler_2203_arm
-            sh build.sh
+            chmod +x .gitcode/scripts/ci_build.sh
+            sh .gitcode/scripts/ci_build.sh
