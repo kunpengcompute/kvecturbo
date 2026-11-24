@@ -18,6 +18,11 @@
 <td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p111217289571"><a name="p111217289571"></a><a name="p111217289571"></a>Calculates the PQ codebook.</p>
 </td>
 </tr>
+<tr id="row_validate_pq_table_list"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p_validate_pq_table_list"><a name="p_validate_pq_table_list"></a><a name="p_validate_pq_table_list"></a>ValidatePQTable</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p_validate_pq_table_list_desc"><a name="p_validate_pq_table_list_desc"></a><a name="p_validate_pq_table_list_desc"></a>Validates that a loaded PQ codebook can be used.</p>
+</td>
+</tr>
 <tr id="row119491112174414"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p539219519167"><a name="p539219519167"></a><a name="p539219519167"></a>ComputeVectorPQCode</p>
 </td>
 <td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p617774433819"><a name="p617774433819"></a><a name="p617774433819"></a>Quantizes the input vector based on the PQ codebook.</p>
@@ -146,7 +151,7 @@ The parameters used by the KVecTurbo APIs involve the `VectorArray` and `PQParam
 <td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p28487964518"><a name="p28487964518"></a><a name="p28487964518"></a>[1, 256]</p>
 </td>
 </tr>
-<tr id="row3706173411353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p15903249194711"><a name="p15903249194711"></a><a name="p15903249194711"></a>functype</p>
+<tr id="row3706173411353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p15903249194711"><a name="p15903249194711"></a><a name="p15903249194711"></a>funcType</p>
 </td>
 <td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p10378553185217"><a name="p10378553185217"></a><a name="p10378553185217"></a>Distance type.</p>
 </td>
@@ -158,11 +163,11 @@ The parameters used by the KVecTurbo APIs involve the `VectorArray` and `PQParam
 </tr>
 <tr id="row4707934123513"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p209032495474"><a name="p209032495474"></a><a name="p209032495474"></a>subItemSize</p>
 </td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p6378053195212"><a name="p6378053195212"></a><a name="p6378053195212"></a>Codeword size.</p>
+<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p6378053195212"><a name="p6378053195212"></a><a name="p6378053195212"></a>Codeword size; it must be the aligned sub-vector size: (8 + 4 * (dim / pqM)) rounded up to MAXIMUM_ALIGNOF.</p>
 </td>
 <td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p2849991457"><a name="p2849991457"></a><a name="p2849991457"></a>size_t</p>
 </td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p98491298451"><a name="p98491298451"></a><a name="p98491298451"></a>The value cannot be <code>0</code>.</p>
+<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p98491298451"><a name="p98491298451"></a><a name="p98491298451"></a>It must be exactly (8 + 4 * (dim / pqM)) rounded up to MAXIMUM_ALIGNOF; otherwise the API returns <code>-1</code>.</p>
 </td>
 </tr>
 <tr id="row1670718344353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p19903154912477"><a name="p19903154912477"></a><a name="p19903154912477"></a>pqTable</p>
@@ -171,7 +176,7 @@ The parameters used by the KVecTurbo APIs involve the `VectorArray` and `PQParam
 </td>
 <td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p88493920454"><a name="p88493920454"></a><a name="p88493920454"></a>char*</p>
 </td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p6849189154513"><a name="p6849189154513"></a><a name="p6849189154513"></a>The value cannot be null.</p>
+<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p6849189154513"><a name="p6849189154513"></a>The value cannot be null. Its capacity must be at least pqM * pqKsub * subItemSize bytes.</p>
 </td>
 </tr>
 </tbody>
@@ -184,6 +189,7 @@ The parameters used by the KVecTurbo APIs involve the `VectorArray` and `PQParam
 #include <stdlib.h>
 #include <string.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // Parameter configuration
@@ -191,38 +197,45 @@ int main() {
     int numSamples = 10000; // Number of training samples
     int pqM = 8;            // Number of subspaces (dim must be exactly divisible by pqM)
     int pqKsub = 256;       // Number of cluster centers per subspace
-    int functype = 1;       // L2 distance
+    int funcType = 1;       // L2 distance
 
-    // Prepare training sample data.
-    size_t dataSize = numSamples * dim * sizeof(float);
-    float* sampleData = (float*)malloc(dataSize);
+    // Prepare training samples: each sample is stored as a Vector (8-byte header + dim floats).
+    size_t sampleItemSize =
+        (sizeof(Vector) + sizeof(float) * dim + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);
+    char* sampleData = (char*)calloc(numSamples, sampleItemSize);
     if (sampleData == NULL) {
         printf("Memory allocation failed.\n");
         return -1;
     }
     //... Populate sampleData with training data ...
-    for (int i = 0; i < numSamples * dim; i++) {
-        sampleData[i] = (float)rand() / RAND_MAX;  // Example: random filling
+    for (int i = 0; i < numSamples; i++) {
+        Vector* sample = (Vector*)(sampleData + (size_t)i * sampleItemSize);
+        sample->vlen = dim;
+        sample->dim = (signed short)dim;
+        for (int d = 0; d < dim; d++) {
+            sample->x[d] = (float)rand() / RAND_MAX;  // Example: random filling
+        }
     }
 
     // Initialize the VectorArray structure.
-    VectorArray samples;
-    samples.maxLen = numSamples;
-    samples.length = numSamples;
-    samples.dim = dim;
-    samples.itemSize = dim * sizeof(float);
-    samples.items = (char*)sampleData;
+    VectorArrayData samplesData;
+    samplesData.maxLen = numSamples;
+    samplesData.length = numSamples;
+    samplesData.dim = dim;
+    samplesData.itemSize = sampleItemSize;
+    samplesData.items = sampleData;
+    VectorArray samples = &samplesData;
 
     // Initialize the PQParams structure.
     PQParams params;
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = functype;
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = funcType;
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // header + data, aligned up to MAXIMUM_ALIGNOF
     
     // Allocate storage space for the codebook.
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     if (params.pqTable == NULL) {
         printf("Failed to allocate memory for the codebook.\n");
@@ -281,14 +294,14 @@ Calculates the PQ codebook.
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p1726499165213"><a name="p1726499165213"></a><a name="p1726499165213"></a>VectorArray</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>For details, see <a href="#table1646711617442">VectorArray field description.</a></p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>For details, see <a href="#table1646711617442">VectorArray field description.</a> Every component of every sample must be finite and its absolute value must not exceed 1e17; otherwise the API returns <code>-1</code>.</p>
 </td>
 </tr>
 <tr id="row6286022173712"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p1596013543378"><a name="p1596013543378"></a><a name="p1596013543378"></a>params</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p226410910524"><a name="p226410910524"></a><a name="p226410910524"></a>PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>For details, see <a href="#table11706934103516">PQParams field description.</a> The <code>pqTable</code> may also be used as an output value.</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>For details, see <a href="#table11706934103516">PQParams field description.</a> The <code>pqTable</code> must point to a caller-allocated buffer of at least pqM * pqKsub * subItemSize bytes.</p>
 </td>
 </tr>
 </tbody>
@@ -311,6 +324,25 @@ Calculates the PQ codebook.
 </tbody>
 </table>
 
+**Notes**
+
+- **Buffer ownership and capacity responsibility**: `params->pqTable` points to a buffer allocated and owned by the caller, and this API writes `pqM × pqKsub × subItemSize` bytes of codebook into it. The API takes no capacity parameter and **does not verify the actual buffer capacity**; capacity correctness is guaranteed by the caller.
+- **Consequence of an undersized buffer**: if the buffer is smaller than required, this API does not return `-1` (capacity is not covered by the entry checks); the out-of-bounds write corrupts heap memory, typically surfacing as a crash far from the call site, and cannot be detected through the return value.
+- **Capacity must be guaranteed before the call**: before calling this API, allocate `pqM × pqKsub × subItemSize` bytes for `params->pqTable` using the formula below. This is the only effective control point that prevents the out-of-bounds heap write.
+- **Self-check recommendation (post-hoc detection only)**: after this API returns 0, you may call `ValidatePQTable(params, pqTableSize)` with the actually allocated capacity to verify the buffer capacity and the centroid values. However, it can only detect an undersized buffer after the out-of-bounds write has already happened: it cannot prevent heap corruption and is not a substitute for pre-allocation.
+
+Canonical allocation formula for the codebook buffer (computed in `size_t`):
+
+```c
+/* subItemSize: Vector header (8 bytes) + dsub floats, aligned up to MAXIMUM_ALIGNOF */
+params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM)
+                      + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);
+/* Required capacity of the codebook buffer */
+size_t pqTableSize = (size_t)pqM * pqKsub * params.subItemSize;
+```
+
+`sizeof(Vector)` covers the 8-byte header (`vlen`, `dim`, and `unused`; `vlen` holds the number of dimensions and equals `dim`), and `MAXIMUM_ALIGNOF` is 8. When `pqKsub` exceeds the number of training samples, the actual number of clusters is clamped to the number of samples and existing centroids are reused cyclically (index modulo the number of trained centroids); the total number of bytes written remains unchanged.
+
 **Example**
 
 ```c++
@@ -318,6 +350,7 @@ Calculates the PQ codebook.
 #include <stdlib.h>
 #include <string.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // Parameter configuration
@@ -325,38 +358,45 @@ int main() {
     int numSamples = 10000; // Number of training samples
     int pqM = 8;            // Number of subspaces (dim must be exactly divisible by pqM)
     int pqKsub = 256;       // Number of cluster centers per subspace
-    int functype = 1;       // L2 distance
+    int funcType = 1;       // L2 distance
 
-    // Prepare training sample data.
-    size_t dataSize = numSamples * dim * sizeof(float);
-    float* sampleData = (float*)malloc(dataSize);
+    // Prepare training samples: each sample is stored as a Vector (8-byte header + dim floats).
+    size_t sampleItemSize =
+        (sizeof(Vector) + sizeof(float) * dim + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);
+    char* sampleData = (char*)calloc(numSamples, sampleItemSize);
     if (sampleData == NULL) {
         printf("Memory allocation failed.\n");
         return -1;
     }
     //... Populate sampleData with training data ...
-    for (int i = 0; i < numSamples * dim; i++) {
-        sampleData[i] = (float)rand() / RAND_MAX;  // Example: random filling
+    for (int i = 0; i < numSamples; i++) {
+        Vector* sample = (Vector*)(sampleData + (size_t)i * sampleItemSize);
+        sample->vlen = dim;
+        sample->dim = (signed short)dim;
+        for (int d = 0; d < dim; d++) {
+            sample->x[d] = (float)rand() / RAND_MAX;  // Example: random filling
+        }
     }
 
     // Initialize the VectorArray structure.
-    VectorArray samples;
-    samples.maxLen = numSamples;
-    samples.length = numSamples;
-    samples.dim = dim;
-    samples.itemSize = dim * sizeof(float);
-    samples.items = (char*)sampleData;
+    VectorArrayData samplesData;
+    samplesData.maxLen = numSamples;
+    samplesData.length = numSamples;
+    samplesData.dim = dim;
+    samplesData.itemSize = sampleItemSize;
+    samplesData.items = sampleData;
+    VectorArray samples = &samplesData;
 
     // Initialize the PQParams structure.
     PQParams params;
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = functype;
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = funcType;
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // header + data, aligned up to MAXIMUM_ALIGNOF
     
     // Allocate storage space for the codebook.
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     if (params.pqTable == NULL) {
         printf("Failed to allocate memory for the codebook.\n");
@@ -388,6 +428,61 @@ int main() {
 }
 ```
 
+## ValidatePQTable
+
+**Interface definition<a name="section_validate_pq_table"></a>**
+
+int ValidatePQTable\(const PQParams \*params, size_t pqTableSize\);
+
+**Purpose**
+
+Validates that a loaded PQ codebook can be used. Call it once after loading a persisted codebook to reject centroids containing NaN/Inf or out-of-range values, which may have been produced by earlier versions or abnormal training data, so that subsequent queries do not silently return wrong results. Calling it after `ComputePQTable` returns 0 can only detect an undersized codebook buffer or invalid centroid values after the fact—by then the out-of-bounds write may already have happened—so the capacity must be allocated by the caller using the formula before calling `ComputePQTable` (see its Notes).
+
+**Parameters<a name="section_validate_pq_table_params"></a>**
+
+<a name="table_validate_pq_table_params"></a>
+<table><thead align="left"><tr id="row_validate_pq_table_params_head"><th class="cellrowborder" valign="top" width="15.39%" id="mcps1.1.5.1.1"><p>Parameter</p>
+</th>
+<th class="cellrowborder" valign="top" width="19.24%" id="mcps1.1.5.1.2"><p>Data Type</p>
+</th>
+<th class="cellrowborder" valign="top" width="65.37%" id="mcps1.1.5.1.3"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="row_validate_pq_table_params"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p>params</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p>PQParams</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.3 "><p>PQ algorithm parameters, where pqTable points to the codebook buffer to be validated. For field details, see the PQParams field description in the struct description.</p>
+</td>
+</tr>
+<tr id="row_validate_pq_table_size"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p>pqTableSize</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p>size_t</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.3 "><p>Length of the codebook buffer in bytes, at least pqM * pqKsub * subItemSize.</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+**Return Value<a name="section_validate_pq_table_return"></a>**
+
+<a name="table_validate_pq_table_return"></a>
+<table><thead align="left"><tr id="row_validate_pq_table_return_head"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p>Data Type</p>
+</th>
+<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="row_validate_pq_table_return"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p>int</p>
+</td>
+<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p>Returns 0 if the codebook is valid, or -1 if the parameters are invalid, the buffer is too small, or a centroid value is invalid (NaN/Inf, or any component whose absolute value exceeds 1e17).</p>
+</td>
+</tr>
+</tbody>
+</table>
+
 ## ComputeVectorPQCode
 
 **API Definition<a name="section172317194488"></a>**
@@ -417,7 +512,7 @@ Quantizes the input vector based on the PQ codebook.
 </td>
 <td class="cellrowborder" valign="top" width="33.85%" headers="mcps1.1.5.1.3 "><p id="p197735413538"><a name="p197735413538"></a><a name="p197735413538"></a>Original vector.</p>
 </td>
-<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p1829095424711"><a name="p1829095424711"></a><a name="p1829095424711"></a>The value cannot be null.</p>
+<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p1829095424711"><a name="p1829095424711"></a><a name="p1829095424711"></a>The value cannot be null. Every component must be finite and its absolute value must not exceed 1e17; otherwise the API returns <code>-1</code>.</p>
 </td>
 </tr>
 <tr id="row18468216154410"><td class="cellrowborder" valign="top" width="16.06%" headers="mcps1.1.5.1.1 "><p id="p2290754114711"><a name="p2290754114711"></a><a name="p2290754114711"></a>pqCode</p>
@@ -471,6 +566,7 @@ Quantizes the input vector based on the PQ codebook.
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // Assume that the PQ codebook has been obtained by calling ComputePQTable
@@ -483,11 +579,11 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2 distance
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2 distance
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // header + data, aligned up to MAXIMUM_ALIGNOF
     
     // Allocate memory and populate the codebook (in production, use the output of ComputePQTable)
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... Assume that pqTable has been filled by calling ComputePQTable ...
 
@@ -602,6 +698,7 @@ Calculates the PQ SDC distance table, that is, calculates the distance between t
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // Assume that the PQ codebook has been obtained by calling ComputePQTable
@@ -614,10 +711,10 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2 distance
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2 distance
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // header + data, aligned up to MAXIMUM_ALIGNOF
     
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... Assume that pqTable has been filled by calling ComputePQTable ...
 
@@ -684,7 +781,7 @@ Calculates the PQ ADC distance table, that is, calculates the distance between t
 </td>
 <td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p19533285546"><a name="p19533285546"></a><a name="p19533285546"></a>Original vector.</p>
 </td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p153918116557"><a name="p153918116557"></a><a name="p153918116557"></a>The value cannot be null.</p>
+<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p153918116557"><a name="p153918116557"></a><a name="p153918116557"></a>The value cannot be null. Every component must be finite and its absolute value must not exceed 1e17; otherwise the API returns <code>-1</code>.</p>
 </td>
 </tr>
 <tr id="row18468216154410"><td class="cellrowborder" valign="top" width="18.34%" headers="mcps1.1.5.1.1 "><p id="p939711155514"><a name="p939711155514"></a><a name="p939711155514"></a>pqDistanceTable</p>
@@ -702,7 +799,7 @@ Calculates the PQ ADC distance table, that is, calculates the distance between t
 </td>
 <td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p18270031811"><a name="p18270031811"></a><a name="p18270031811"></a>Length of the ADC distance table array.</p>
 </td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p2270133219"><a name="p2270133219"></a><a name="p2270133219"></a>The value is specified by <code>pqM</code> × <code>pqKsub</code> × <code>pqKsub</code>, where <code>pqM</code> and <code>pqKsub</code> are fields in the <code>PQParams</code> structure, respectively indicating the number of subspaces and the number of cluster centroids in these subspaces.</p>
+<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p2270133219"><a name="p2270133219"></a><a name="p2270133219"></a>The value is specified by <code>pqM</code> × <code>pqKsub</code>, where <code>pqM</code> and <code>pqKsub</code> are fields in the <code>PQParams</code> structure, respectively indicating the number of subspaces and the number of cluster centroids in these subspaces.</p>
 </td>
 </tr>
 <tr id="row746811684410"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p26190151167"><a name="p26190151167"></a><a name="p26190151167"></a>params</p>
@@ -738,6 +835,7 @@ Calculates the PQ ADC distance table, that is, calculates the distance between t
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // Assume that the PQ codebook has been obtained by calling ComputePQTable
@@ -750,10 +848,10 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2 distance
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2 distance
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // header + data, aligned up to MAXIMUM_ALIGNOF
     
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... Assume that pqTable has been filled by calling ComputePQTable ...
 
@@ -928,6 +1026,7 @@ Calculates the PQ ADC or SDC distance. If querycode == NULL, the ADC distance is
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     int dim = 128;
@@ -939,10 +1038,10 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2 distance
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2 distance
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // header + data, aligned up to MAXIMUM_ALIGNOF
     
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... Assume that pqTable has been filled by calling ComputePQTable ...
 

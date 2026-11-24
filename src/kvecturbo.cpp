@@ -116,6 +116,31 @@ int VectorArraySet(VectorArray arr, int offset, char *val, size_t vecSize)
 }
 
 /*
+ * @brief Upper bound for the absolute value of every input component
+ *
+ * With this bound no intermediate float accumulation can overflow to Inf: the centroid sum is at most
+ * 2^44 * 1e17 = 1.76e30, and the squared distance is at most 2000 * (2 * 1e17)^2 = 8e37, both of which
+ * stay below FLT_MAX (3.4e38).
+ */
+static constexpr float MAX_ABS_VECTOR_VALUE = 1.0e17f;
+
+/*
+ * @brief Check whether all elements of a float array are finite and within range
+ * @param data Pointer to the float array
+ * @param count Number of elements to check
+ * @return true if every element is finite and in range, false otherwise
+ */
+static bool IsValidVector(const float *data, size_t count)
+{
+    for (size_t i = 0; i < count; i++) {
+        if (!std::isfinite(data[i]) || std::fabs(data[i]) > MAX_ABS_VECTOR_VALUE) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/*
  * @brief Random number generator class
  */
 class kvecturbo {
@@ -329,13 +354,8 @@ Vector *InitVector(int dim)
         return nullptr;
     }
 
-#ifdef WORDS_BIGENDIAN
-    ((Varattrib4b *)(result))->va4byte.vaHeader = size & 0x3FFFFFFF;
-#else
-    /* Little-endian mode: Left shift by 2 bits */
-    ((Varattrib4b *)(result))->va4byte.vaHeader = size << 2;
-#endif
-
+    /* vlen stores the number of dimensions, consistent with the documented Vector layout */
+    result->vlen = dim;
     result->dim = dim;
     return result;
 }
@@ -495,80 +515,67 @@ void SumCenters(const float *samples, float *agg, const int *closestCenters, int
 }
 
 /*
- * @brief Handle empty clusters or clusters with few samples by initializing randomly
- * @param agg Aggregation buffer
- * @param newCenters New cluster centers
+ * @brief Reseed an empty cluster from the largest cluster or from a random sample
+ * @param samples Flattened sample data (numSamples x dimensions)
+ * @param newCenters New cluster centers (numCenters x dimensions)
  * @param centerCounts Count of samples per center
- * @param j Cluster index
+ * @param j Index of the empty cluster to reseed
+ * @param numSamples Number of samples
  * @param dimensions Vector dimension
  * @param numCenters Number of clusters
  * @param randGen Random number generator
- * @param newCentersSize Size of new cluster centers buffer
  * @return 0 on success, -1 on failure
  */
-int handleClusterOrInitializeRandomly(float *agg, float *newCenters, std::vector<int> &centerCounts, int j,
-                                      int dimensions, int numCenters, kvecturbo &randGen, size_t *newCentersSize)
+int ReseedEmptyCluster(const float *samples, float *newCenters, std::vector<int> &centerCounts, int j, int numSamples,
+                       int dimensions, int numCenters, kvecturbo &randGen)
 {
     int maxCenter = -1;
     int maxCount = 0;
-    std::atomic<bool> errCondition(false);
-
-    /* Find the cluster with the most samples */
-#pragma omp critical
-    {
-        for (int c = 0; c < numCenters; c++) {
-            if (centerCounts[c] > maxCount) {
-                maxCount = centerCounts[c];
-                maxCenter = c;
-            }
+    for (int c = 0; c < numCenters; c++) {
+        if (centerCounts[c] > maxCount) {
+            maxCount = centerCounts[c];
+            maxCenter = c;
         }
-
-        if (maxCenter != -1 && maxCount > 1) {
-            float *maxCenterSumBuffer = agg + maxCenter * dimensions;
-            float *sumBuffer = agg + j * dimensions;
-
-            errno_t result = memcpy_s(sumBuffer, *newCentersSize, maxCenterSumBuffer, dimensions * sizeof(float));
-            if (result != 0) {
-                std::cerr << "Error: memcpy_s failed with sumBuffer and maxCenterSumBuffer: " << result << std::endl;
-                errCondition.store(true);
-                goto critical_end;
-            }
-
-            /* Apply larger perturbation */
-            float eps = 1e-4f; /* Increase the disturbance amount */
-            for (int k = 0; k < dimensions; k++) {
-                float perturbation = (k % 2 == 0) ? eps : -eps;
-                sumBuffer[k] += perturbation;
-                maxCenterSumBuffer[k] -= perturbation;
-            }
-
-            /* Update counts */
-            int transferCount = maxCount / 2;
-            if (transferCount == 0) {
-                transferCount = 1;
-            }
-            centerCounts[j] = transferCount;
-            centerCounts[maxCenter] -= transferCount;
-
-            result = memcpy_s(&newCenters[j * dimensions], *newCentersSize, sumBuffer, dimensions * sizeof(float));
-            if (result != 0) {
-                std::cerr << "Error: memcpy_s failed with newCenters and sumBuffer: " << result << std::endl;
-                errCondition.store(true);
-                goto critical_end;
-            }
-
-            result = memcpy_s(&newCenters[maxCenter * dimensions], *newCentersSize, maxCenterSumBuffer,
-                              dimensions * sizeof(float));
-            if (result != 0) {
-                std::cerr << "Error: memcpy_s failed with newCenters and maxCenterSumBuffer: " << result << std::endl;
-                errCondition.store(true);
-                goto critical_end;
-            }
-        }
-    critical_end:;
     }
 
-    return errCondition.load() ? -1 : 0;
+    size_t centerSize = static_cast<size_t>(dimensions) * sizeof(float);
+    float *target = newCenters + static_cast<size_t>(j) * static_cast<size_t>(dimensions);
+
+    if (maxCenter != -1 && maxCount > 1) {
+        /* Split the largest cluster: copy its normalized center and perturb it slightly */
+        errno_t result = memcpy_s(target, centerSize, newCenters + static_cast<size_t>(maxCenter) * dimensions,
+                                  centerSize);
+        if (result != 0) {
+            std::cerr << "Error: memcpy_s failed with target and maxCenter: " << result << std::endl;
+            return -1;
+        }
+        const float eps = 1e-4f; /* Perturbation amount */
+        for (int k = 0; k < dimensions; k++) {
+            target[k] += (k % 2 == 0) ? eps : -eps;
+        }
+        int transferCount = maxCount / 2;
+        if (transferCount == 0) {
+            transferCount = 1;
+        }
+        centerCounts[j] = transferCount;
+        centerCounts[maxCenter] -= transferCount;
+        return 0;
+    }
+
+    /* No cluster has enough samples to split: use a random sample as the new center */
+    if (numSamples <= 0) {
+        std::cerr << "Error: No sample available to reseed cluster " << j << std::endl;
+        return -1;
+    }
+    std::uniform_int_distribution<int> pick(0, numSamples - 1);
+    int sampleIndex = pick(randGen.GetEngine());
+    errno_t result = memcpy_s(target, centerSize, samples + static_cast<size_t>(sampleIndex) * dimensions, centerSize);
+    if (result != 0) {
+        std::cerr << "Error: memcpy_s failed with target and sample: " << result << std::endl;
+        return -1;
+    }
+    centerCounts[j] = 1;
+    return 0;
 }
 
 /*
@@ -600,6 +607,7 @@ int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::
 
     std::atomic<bool> errCondition(false);
 
+    /* Phase 1: normalize the non-empty clusters in parallel, each thread only touches its own slice of agg */
 #pragma omp parallel shared(errCondition)
     {
         int nt = omp_get_num_threads();
@@ -613,40 +621,45 @@ int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::
             if (errCondition.load())
                 break;
 
+            if (centerCounts[j] <= 0) {
+                continue;
+            }
+
             size_t offset = static_cast<size_t>(j) * static_cast<size_t>(dimensions);
             size_t remainingBytes = (numCentersD - offset) * sizeof(float);
             float *sumBuffer = agg + offset;
 
-            if (centerCounts[j] > 0) {
-                float norm = 1.0f / centerCounts[j];
-                for (int k = 0; k < dimensions; k++) {
-                    sumBuffer[k] *= norm;
-                }
-                errno_t result = memcpy_s(&newCenters[offset], remainingBytes, sumBuffer, dimensions * sizeof(float));
-                if (result != 0) {
+            float norm = 1.0f / centerCounts[j];
+            for (int k = 0; k < dimensions; k++) {
+                sumBuffer[k] *= norm;
+            }
+            errno_t result = memcpy_s(&newCenters[offset], remainingBytes, sumBuffer, dimensions * sizeof(float));
+            if (result != 0) {
 #pragma omp critical
-                    {
-                        std::cerr << "Error: memcpy_s failed with error code: " << result << std::endl;
-                        errCondition.store(true);
-                    }
-#pragma omp cancel parallel
-                    break;
+                {
+                    std::cerr << "Error: memcpy_s failed with error code: " << result << std::endl;
+                    errCondition.store(true);
                 }
-            } else {
-                if (handleClusterOrInitializeRandomly(agg, newCenters, centerCounts, j, dimensions, numCenters, randGen,
-                                                      &remainingBytes) != 0) {
-#pragma omp critical
-                    {
-                        std::cerr << "Error: Failed to handle empty cluster " << j << std::endl;
-                        errCondition.store(true);
-                    }
 #pragma omp cancel parallel
-                    break;
-                }
+                break;
             }
         }
     }
-    return errCondition.load() ? -1 : 0;
+    if (errCondition.load()) {
+        return -1;
+    }
+
+    /* Phase 2: reseed the empty clusters after the parallel region, so agg and centerCounts are no longer shared */
+    for (int j = 0; j < numCenters; j++) {
+        if (centerCounts[j] > 0) {
+            continue;
+        }
+        if (ReseedEmptyCluster(samples, newCenters, centerCounts, j, numSamples, dimensions, numCenters, randGen) != 0) {
+            std::cerr << "Error: Failed to reseed empty cluster " << j << std::endl;
+            return -1;
+        }
+    }
+    return 0;
 }
 
 /*
@@ -830,9 +843,9 @@ int NormalKmeans(VectorArray samples, VectorArray centers, int pqM)
  * @param c Codebook
  * @param ksub Number of sub-centers
  * @param size Vector dimension
- * @return Index of the closest sub-center
+ * @return Index of the closest sub-center, or -1 if no valid sub-center exists
  */
-unsigned char VectorL2SquaredDistancePQ(int step, float *a, float *c, int ksub, int size)
+int VectorL2SquaredDistancePQ(int step, float *a, float *c, int ksub, int size)
 {
     float minDis = FLT_MAX;
     int minIdx = -1;
@@ -984,6 +997,15 @@ int ComputePQTable(VectorArray samples, PQParams *params)
         return -1;
     }
 
+    /* Reject invalid training data, which would otherwise be persisted into the codebook */
+    for (int i = 0; i < samplenum; i++) {
+        const Vector *vec = reinterpret_cast<const Vector *>(VectorArrayGet(samples, i));
+        if (!IsValidVector(vec->x, static_cast<size_t>(dim))) {
+            std::cerr << "Error: Training sample " << i << " contains invalid values" << std::endl;
+            return -1;
+        }
+    }
+
     const int dsub = dim / pqM; /* Total dimension / number of subspaces */
     const size_t subItemSize = MAXALIGN(VECTOR_SIZE(dsub));
     if (subItemSize != params->subItemSize) {
@@ -1016,11 +1038,26 @@ int ComputePQTable(VectorArray samples, PQParams *params)
             return -1;
         }
 
-        /* Copy centers to PQ table with safety checks */
+        /*
+         * Copy trained centers to the PQ table. When fewer than pqKsub centers were trained,
+         * the remaining entries reuse trained centers instead of leaving degenerate zero code words.
+         */
+        const int trainedCenters = centers->length;
+        if (trainedCenters <= 0) {
+            std::cerr << "Error: No center was trained for subspace " << m << std::endl;
+            VectorArrayRelease(centers);
+            VectorArrayRelease(subVectorArrays);
+            return -1;
+        }
+        if (trainedCenters < pqKsub && m == 0) {
+            std::cerr << "Warning: only " << trainedCenters << " of " << pqKsub
+                      << " centers were trained, replicating trained centers" << std::endl;
+        }
         for (int i = 0; i < pqKsub; i++) {
-            char *vec = VectorArrayGet(centers, i);
+            int srcIndex = (i < trainedCenters) ? i : (i % trainedCenters);
+            char *vec = VectorArrayGet(centers, srcIndex);
             if (vec == nullptr) {
-                std::cerr << "Error: Null vector at index " << i << " in subspace " << m << std::endl;
+                std::cerr << "Error: Null vector at index " << srcIndex << " in subspace " << m << std::endl;
                 VectorArrayRelease(centers);
                 VectorArrayRelease(subVectorArrays);
                 return -1;
@@ -1041,6 +1078,62 @@ int ComputePQTable(VectorArray samples, PQParams *params)
         /* Cleanup resources */
         VectorArrayRelease(centers);
         VectorArrayRelease(subVectorArrays);
+    }
+
+    return 0;
+}
+
+/*
+ * @brief Validate a PQ codebook before it is used for queries
+ * @param params PQ algorithm parameters
+ * @param pqTableSize Length of the codebook buffer in bytes
+ * @return 0 on success, -1 on failure
+ */
+int ValidatePQTable(const PQParams *params, size_t pqTableSize)
+{
+    if (params == nullptr || params->pqTable == nullptr) {
+        std::cerr << "Error: ValidatePQTable input with nullptr" << std::endl;
+        return -1;
+    }
+
+    const int dim = params->dim;
+    const int pqM = params->pqM;
+    const int pqKsub = params->pqKsub;
+    const int maxDim = 2000;   /* Maximum dimension value */
+    const int maxPQksub = 256; /* Maximum PQ sub-center value */
+    if (dim < 1 || dim > maxDim || pqM <= 0 || pqM > maxDim || pqM > dim || dim % pqM != 0) {
+        std::cerr << "Error: Invalid pqM=" << pqM << " or dim=" << dim << " values" << std::endl;
+        return -1;
+    }
+    if (pqKsub <= 0 || pqKsub > maxPQksub) {
+        std::cerr << "Error: Invalid pqKsub=" << pqKsub << std::endl;
+        return -1;
+    }
+
+    const int dsub = dim / pqM;
+    const size_t subItemSize = MAXALIGN(VECTOR_SIZE(dsub));
+    if (subItemSize != params->subItemSize) {
+        std::cerr << "Error: Sub-item size mismatch" << std::endl;
+        return -1;
+    }
+    const size_t requiredSize = static_cast<size_t>(pqM) * static_cast<size_t>(pqKsub) * subItemSize;
+    if (pqTableSize < requiredSize) {
+        std::cerr << "Error: Codebook size " << pqTableSize << " is smaller than required " << requiredSize
+                  << std::endl;
+        return -1;
+    }
+
+    /* Reject codebooks poisoned by NaN/Inf or out-of-range values, e.g. produced by earlier versions */
+    const char *const pqTable = params->pqTable;
+    for (int m = 0; m < pqM; m++) {
+        for (int k = 0; k < pqKsub; k++) {
+            const Vector *centroid =
+                reinterpret_cast<const Vector *>(pqTable + (static_cast<size_t>(m) * pqKsub + k) * subItemSize);
+            if (!IsValidVector(centroid->x, static_cast<size_t>(dsub))) {
+                std::cerr << "Error: Invalid centroid at subspace " << m << ", center " << k << std::endl;
+                return -1;
+            }
+        }
     }
 
     return 0;
@@ -1192,17 +1285,24 @@ int ComputeVectorPQCode(float *vector, const PQParams *params, unsigned char *pq
         std::cerr << "Error: invalid subItemSize" << std::endl;
         return -1;
     }
+    if (!IsValidVector(vector, static_cast<size_t>(dim))) {
+        std::cerr << "Error: input vector contains invalid values" << std::endl;
+        return -1;
+    }
     int step = subItemSize / sizeof(float);
 
     for (int i = 0; i < pqM; i++) {
-        unsigned char minIndex = -1;
         Vector *tempVec2 = reinterpret_cast<Vector *>(pqTable + (i * pqKsub) * subItemSize);
         if (tempVec2 == nullptr) {
             std::cerr << "Error: VectorArrayGet returned tempVec2 is nullptr" << std::endl;
             return -1;
         }
-        minIndex = VectorL2SquaredDistancePQ(step, vector + i * dsub, tempVec2->x, pqKsub, dsub);
-        pqCode[i] = minIndex;
+        int minIndex = VectorL2SquaredDistancePQ(step, vector + i * dsub, tempVec2->x, pqKsub, dsub);
+        if (minIndex < 0) {
+            std::cerr << "Error: no valid sub-center found for subspace " << i << std::endl;
+            return -1;
+        }
+        pqCode[i] = static_cast<unsigned char>(minIndex);
     }
     return 0;
 }
@@ -1339,7 +1439,7 @@ int GetPQDistanceTableAdc(float *vector, const PQParams *params, float *pqDistan
     int maxDim = 2000;   /* Maximum dimension value */
     int maxPQksub = 256; /* Maximum PQ sub-center value */
     if (pqM <= 0 || dim % pqM != 0 || dim < pqM || dim < 1 || dim > maxDim || pqM > maxDim || pqKsub <= 0 ||
-        pqKsub > maxPQksub || pqDistanceTable_size < static_cast<size_t>(pqM * pqKsub * pqKsub)) {
+        pqKsub > maxPQksub || pqDistanceTable_size < static_cast<size_t>(pqM * pqKsub)) {
         std::cerr << "invalid pq values" << std::endl
                   << "dim = " << dim << std::endl
                   << "pqM = " << pqM << std::endl
@@ -1358,6 +1458,10 @@ int GetPQDistanceTableAdc(float *vector, const PQParams *params, float *pqDistan
     /* funcType: 1/2/3 */
     if (funcType < 1 || funcType > 3) {
         std::cerr << "Error: invalid funcType : " << funcType << std::endl;
+        return -1;
+    }
+    if (!IsValidVector(vector, static_cast<size_t>(dim))) {
+        std::cerr << "Error: query vector contains invalid values" << std::endl;
         return -1;
     }
     int step = subItemSize / sizeof(float);

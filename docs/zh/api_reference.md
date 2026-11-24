@@ -18,6 +18,11 @@ KVecTurbo提供的接口如[**表 1** KVecTurbo提供的接口](#KVecTurbo提供
 <td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p111217289571"><a name="p111217289571"></a><a name="p111217289571"></a>计算PQ码本。</p>
 </td>
 </tr>
+<tr id="row_validate_pq_table_list"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p_validate_pq_table_list"><a name="p_validate_pq_table_list"></a><a name="p_validate_pq_table_list"></a>ValidatePQTable</p>
+</td>
+<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p_validate_pq_table_list_desc"><a name="p_validate_pq_table_list_desc"></a><a name="p_validate_pq_table_list_desc"></a>校验已加载的PQ码本是否可用。</p>
+</td>
+</tr>
 <tr id="row119491112174414"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p539219519167"><a name="p539219519167"></a><a name="p539219519167"></a>ComputeVectorPQCode</p>
 </td>
 <td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p617774433819"><a name="p617774433819"></a><a name="p617774433819"></a>根据PQ码本，量化输入向量。</p>
@@ -146,7 +151,7 @@ KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“�
 <td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p28487964518"><a name="p28487964518"></a><a name="p28487964518"></a>[1,256]</p>
 </td>
 </tr>
-<tr id="row3706173411353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p15903249194711"><a name="p15903249194711"></a><a name="p15903249194711"></a>functype</p>
+<tr id="row3706173411353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p15903249194711"><a name="p15903249194711"></a><a name="p15903249194711"></a>funcType</p>
 </td>
 <td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p10378553185217"><a name="p10378553185217"></a><a name="p10378553185217"></a>距离类型。</p>
 </td>
@@ -158,11 +163,11 @@ KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“�
 </tr>
 <tr id="row4707934123513"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p209032495474"><a name="p209032495474"></a><a name="p209032495474"></a>subItemSize</p>
 </td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p6378053195212"><a name="p6378053195212"></a><a name="p6378053195212"></a>码字大小。</p>
+<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p6378053195212"><a name="p6378053195212"></a><a name="p6378053195212"></a>码字大小，必须为对齐后的子向量大小：(8 + 4 * (dim / pqM)) 按 MAXIMUM_ALIGNOF 向上对齐。</p>
 </td>
 <td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p2849991457"><a name="p2849991457"></a><a name="p2849991457"></a>size_t</p>
 </td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p98491298451"><a name="p98491298451"></a><a name="p98491298451"></a>限制非0。</p>
+<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p98491298451"><a name="p98491298451"></a><a name="p98491298451"></a>必须精确等于 (8 + 4 * (dim / pqM)) 按 MAXIMUM_ALIGNOF 向上对齐后的值，否则接口返回 -1。</p>
 </td>
 </tr>
 <tr id="row1670718344353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p19903154912477"><a name="p19903154912477"></a><a name="p19903154912477"></a>pqTable</p>
@@ -171,7 +176,7 @@ KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“�
 </td>
 <td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p88493920454"><a name="p88493920454"></a><a name="p88493920454"></a>char*</p>
 </td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p6849189154513"><a name="p6849189154513"></a><a name="p6849189154513"></a>限制非空。</p>
+<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p6849189154513"><a name="p6849189154513"></a>限制非空，容量至少为 pqM * pqKsub * subItemSize 字节。</p>
 </td>
 </tr>
 </tbody>
@@ -204,14 +209,14 @@ int ComputePQTable\(VectorArray samples, PQParams \*params\);
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p1726499165213"><a name="p1726499165213"></a><a name="p1726499165213"></a>VectorArray</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname0442121133711"><a name="parmname0442121133711"></a><a name="parmname0442121133711"></a>“VectorArray”</span>字段描述。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname0442121133711"><a name="parmname0442121133711"></a><a name="parmname0442121133711"></a>“VectorArray”</span>字段描述。每个样本的每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。</p>
 </td>
 </tr>
 <tr id="row6286022173712"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p1596013543378"><a name="p1596013543378"></a><a name="p1596013543378"></a>params</p>
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p226410910524"><a name="p226410910524"></a><a name="p226410910524"></a>PQParams</p>
 </td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname7604423173715"><a name="parmname7604423173715"></a><a name="parmname7604423173715"></a>“PQParams”</span>字段描述。其中，<span class="parmname" id="parmname1493894154317"><a name="parmname1493894154317"></a><a name="parmname1493894154317"></a>“pqTable”</span>也可以作为输出值。</p>
+<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname7604423173715"><a name="parmname7604423173715"></a><a name="parmname7604423173715"></a>“PQParams”</span>字段描述。其中，<span class="parmname" id="parmname1493894154317"><a name="parmname1493894154317"></a><a name="parmname1493894154317"></a>“pqTable”</span>必须指向调用方预先分配的缓冲区，容量至少为 pqM * pqKsub * subItemSize 字节。</p>
 </td>
 </tr>
 </tbody>
@@ -234,6 +239,25 @@ int ComputePQTable\(VectorArray samples, PQParams \*params\);
 </tbody>
 </table>
 
+**注意事项**
+
+- **缓冲区归属与容量责任**：`params->pqTable` 指向由调用方分配并持有的缓冲区，本接口按 `pqM × pqKsub × subItemSize` 字节写入码本。接口不含容量参数，**不校验缓冲区实际容量**，容量正确性由调用方保证。
+- **容量不足的后果**：若缓冲区小于所需容量，本接口不会返回 -1（容量不在入口校验范围内），越界写入将造成堆内存破坏，通常表现为远离调用点的崩溃，无法通过返回值检测。
+- **容量必须在调用前预先保证**：调用本接口之前，必须按下方公式为 `params->pqTable` 分配 `pqM × pqKsub × subItemSize` 字节，这是避免堆越界写入的唯一有效控制点。
+- **自检建议（仅事后侦测）**：本接口返回 0 后，可用真实分配容量调用 `ValidatePQTable(params, pqTableSize)` 复核码本缓冲区容量与质心数值合法性；但它只能在越界写已经发生之后才发现容量不足，无法阻止堆破坏，不能替代预分配。
+
+码本缓冲区的标准分配公式（使用 `size_t` 计算）：
+
+```c
+/* subItemSize：Vector 头（8 字节）+ dsub 个 float，按 MAXIMUM_ALIGNOF 向上对齐 */
+params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM)
+                      + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);
+/* 码本缓冲区所需容量 */
+size_t pqTableSize = (size_t)pqM * pqKsub * params.subItemSize;
+```
+
+其中 `sizeof(Vector)` 头部为 8 字节（`vlen`、`dim`、`unused` 三个字段，`vlen` 填向量维度、与 `dim` 相同），`MAXIMUM_ALIGNOF` 为 8。`pqKsub` 大于训练样本数时，实际聚类数被钳制为样本数并对已有质心取模复用，写入总量不变。
+
 **使用示例**
 
 ```c++
@@ -241,6 +265,7 @@ int ComputePQTable\(VectorArray samples, PQParams \*params\);
 #include <stdlib.h>
 #include <string.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // 参数配置
@@ -248,38 +273,45 @@ int main() {
     int numSamples = 10000; // 训练样本数量
     int pqM = 8;            // 子空间数（dim需能被pqM整除）
     int pqKsub = 256;       // 每个子空间的聚类中心数
-    int functype = 1;       // L2距离
+    int funcType = 1;       // L2距离
 
-    // 准备训练样本数据
-    size_t dataSize = numSamples * dim * sizeof(float);
-    float* sampleData = (float*)malloc(dataSize);
+    // 准备训练样本：每个样本按 Vector 布局存放（8 字节头部 + dim 个 float）
+    size_t sampleItemSize =
+        (sizeof(Vector) + sizeof(float) * dim + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);
+    char* sampleData = (char*)calloc(numSamples, sampleItemSize);
     if (sampleData == NULL) {
         printf("内存分配失败\n");
         return -1;
     }
     // ... 填充sampleData训练数据 ...
-    for (int i = 0; i < numSamples * dim; i++) {
-        sampleData[i] = (float)rand() / RAND_MAX;  // 示例：随机填充
+    for (int i = 0; i < numSamples; i++) {
+        Vector* sample = (Vector*)(sampleData + (size_t)i * sampleItemSize);
+        sample->vlen = dim;
+        sample->dim = (signed short)dim;
+        for (int d = 0; d < dim; d++) {
+            sample->x[d] = (float)rand() / RAND_MAX;  // 示例：随机填充
+        }
     }
 
     // 初始化VectorArray结构体
-    VectorArray samples;
-    samples.maxLen = numSamples;
-    samples.length = numSamples;
-    samples.dim = dim;
-    samples.itemSize = dim * sizeof(float);
-    samples.items = (char*)sampleData;
+    VectorArrayData samplesData;
+    samplesData.maxLen = numSamples;
+    samplesData.length = numSamples;
+    samplesData.dim = dim;
+    samplesData.itemSize = sampleItemSize;
+    samplesData.items = sampleData;
+    VectorArray samples = &samplesData;
 
     // 初始化PQParams结构体
     PQParams params;
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = functype;
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = funcType;
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // 头部+数据，按 MAXIMUM_ALIGNOF 对齐
     
     // 分配码本存储空间
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     if (params.pqTable == NULL) {
         printf("码本内存分配失败\n");
@@ -311,6 +343,61 @@ int main() {
 }
 ```
 
+## ValidatePQTable
+
+**接口定义<a name="section_validate_pq_table"></a>**
+
+int ValidatePQTable\(const PQParams \*params, size_t pqTableSize\);
+
+**接口用途**
+
+校验调用方加载的PQ码本是否可用。建议在载入持久化码本后调用一次，可拦截早期版本或异常训练数据产生的含NaN/Inf、超出取值范围的质心，避免后续查询静默返回错误结果。在 `ComputePQTable` 返回 0 后调用可用于事后侦测码本缓冲区容量不足或质心数值非法，但此时越界写可能已经发生、无法预防；缓冲区容量必须在调用 `ComputePQTable` 之前按公式自行分配（详见其"注意事项"）。
+
+**参数说明<a name="section_validate_pq_table_params"></a>**
+
+<a name="table_validate_pq_table_params"></a>
+<table><thead align="left"><tr id="row_validate_pq_table_params_head"><th class="cellrowborder" valign="top" width="15.39%" id="mcps1.1.5.1.1"><p>参数名称</p>
+</th>
+<th class="cellrowborder" valign="top" width="19.24%" id="mcps1.1.5.1.2"><p>数据类型</p>
+</th>
+<th class="cellrowborder" valign="top" width="65.37%" id="mcps1.1.5.1.3"><p>描述</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="row_validate_pq_table_params"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p>params</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p>PQParams</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.3 "><p>PQ算法参数，其中pqTable指向待校验的码本缓冲区。字段描述请参见结构体说明中的“PQParams”字段描述。</p>
+</td>
+</tr>
+<tr id="row_validate_pq_table_size"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p>pqTableSize</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p>size_t</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.3 "><p>码本缓冲区长度（字节），至少为pqM * pqKsub * subItemSize。</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+**返回值<a name="section_validate_pq_table_return"></a>**
+
+<a name="table_validate_pq_table_return"></a>
+<table><thead align="left"><tr id="row_validate_pq_table_return_head"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p>数据类型</p>
+</th>
+<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="row_validate_pq_table_return"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p>int</p>
+</td>
+<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p>码本合法返回0；参数不合法、缓冲区容量不足或质心取值非法（NaN/Inf 或任一分量绝对值超过 1e17）时返回-1。</p>
+</td>
+</tr>
+</tbody>
+</table>
+
 ## ComputeVectorPQCode
 
 **接口定义<a name="section172317194488"></a>**
@@ -340,7 +427,7 @@ int ComputeVectorPQCode\(float \*vector, const PQParams \*params, unsigned char 
 </td>
 <td class="cellrowborder" valign="top" width="33.85%" headers="mcps1.1.5.1.3 "><p id="p197735413538"><a name="p197735413538"></a><a name="p197735413538"></a>原始向量。</p>
 </td>
-<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p1829095424711"><a name="p1829095424711"></a><a name="p1829095424711"></a>限制非空。</p>
+<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p1829095424711"><a name="p1829095424711"></a><a name="p1829095424711"></a>限制非空；每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。</p>
 </td>
 </tr>
 <tr id="row18468216154410"><td class="cellrowborder" valign="top" width="16.06%" headers="mcps1.1.5.1.1 "><p id="p2290754114711"><a name="p2290754114711"></a><a name="p2290754114711"></a>pqCode</p>
@@ -394,6 +481,7 @@ int ComputeVectorPQCode\(float \*vector, const PQParams \*params, unsigned char 
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // 假设已通过ComputePQTable计算得到PQ码本
@@ -406,11 +494,11 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2距离
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2距离
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // 头部+数据，按 MAXIMUM_ALIGNOF 对齐
     
     // 分配并填充码本（实际应用中应使用ComputePQTable的输出）
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... 假设pqTable已通过ComputePQTable填充 ...
 
@@ -525,6 +613,7 @@ int GetPQDistanceTableSdc\(const PQParams \*params, float \*pqDistanceTable, siz
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // 假设已通过ComputePQTable计算得到PQ码本
@@ -537,10 +626,10 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2距离
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2距离
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // 头部+数据，按 MAXIMUM_ALIGNOF 对齐
     
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... 假设pqTable已通过ComputePQTable填充 ...
 
@@ -607,7 +696,7 @@ int GetPQDistanceTableAdc\(float\* vector, const PQParams \*params, float \*pqDi
 </td>
 <td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p19533285546"><a name="p19533285546"></a><a name="p19533285546"></a>原始向量。</p>
 </td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p153918116557"><a name="p153918116557"></a><a name="p153918116557"></a>限制非空。</p>
+<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p153918116557"><a name="p153918116557"></a><a name="p153918116557"></a>限制非空；每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。</p>
 </td>
 </tr>
 <tr id="row18468216154410"><td class="cellrowborder" valign="top" width="18.34%" headers="mcps1.1.5.1.1 "><p id="p939711155514"><a name="p939711155514"></a><a name="p939711155514"></a>pqDistanceTable</p>
@@ -625,7 +714,7 @@ int GetPQDistanceTableAdc\(float\* vector, const PQParams \*params, float \*pqDi
 </td>
 <td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p18270031811"><a name="p18270031811"></a><a name="p18270031811"></a>ADC距离表数组的长度。</p>
 </td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p2270133219"><a name="p2270133219"></a><a name="p2270133219"></a>限制为pqM*pqKsub*pqKsub，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“pqM”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示子空间数，<span class="parmname" id="parmname1924714131720"><a name="parmname1924714131720"></a><a name="parmname1924714131720"></a>“pqKsub”</span>是结构体<span class="parmname" id="parmname17247413229"><a name="parmname17247413229"></a><a name="parmname17247413229"></a>“PQParams”</span>中的字段，表示子空间内聚类中心数。</p>
+<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p2270133219"><a name="p2270133219"></a><a name="p2270133219"></a>限制为pqM*pqKsub，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“pqM”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示子空间数，<span class="parmname" id="parmname1924714131720"><a name="parmname1924714131720"></a><a name="parmname1924714131720"></a>“pqKsub”</span>是结构体<span class="parmname" id="parmname17247413229"><a name="parmname17247413229"></a><a name="parmname17247413229"></a>“PQParams”</span>中的字段，表示子空间内聚类中心数。</p>
 </td>
 </tr>
 <tr id="row746811684410"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p26190151167"><a name="p26190151167"></a><a name="p26190151167"></a>params</p>
@@ -661,6 +750,7 @@ int GetPQDistanceTableAdc\(float\* vector, const PQParams \*params, float \*pqDi
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     // 假设已通过ComputePQTable计算得到PQ码本
@@ -673,10 +763,10 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2距离
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2距离
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // 头部+数据，按 MAXIMUM_ALIGNOF 对齐
     
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... 假设pqTable已通过ComputePQTable填充 ...
 
@@ -851,6 +941,7 @@ int GetPQDistance\(const unsigned char \*basecode, const unsigned char \*queryco
 #include <stdio.h>
 #include <stdlib.h>
 #include "kvecturbo.h"
+using namespace PQHead;
 
 int main() {
     int dim = 128;
@@ -862,10 +953,10 @@ int main() {
     params.dim = dim;
     params.pqM = pqM;
     params.pqKsub = pqKsub;
-    params.functype = 1;  // L2距离
-    params.subItemSize = (dim / pqM) * sizeof(float);
+    params.funcType = 1;  // L2距离
+    params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM) + MAXIMUM_ALIGNOF - 1) & ~(size_t)(MAXIMUM_ALIGNOF - 1);  // 头部+数据，按 MAXIMUM_ALIGNOF 对齐
     
-    size_t pqTableSize = pqM * pqKsub * (dim / pqM) * sizeof(float);
+    size_t pqTableSize = pqM * pqKsub * params.subItemSize;
     params.pqTable = (char*)malloc(pqTableSize);
     // ... 假设pqTable已通过ComputePQTable填充 ...
 
