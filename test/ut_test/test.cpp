@@ -117,13 +117,8 @@ Vector *InitVector(int dim)
         return nullptr;
     }
 
-#ifdef WORDS_BIGENDIAN
-    ((Varattrib4b *)(result))->va4byte.vaHeader = size & 0x3FFFFFFF;
-#else
-    /* Little-endian mode: shift left by 2 */
-    ((Varattrib4b *)(result))->va4byte.vaHeader = size << 2;
-#endif
-
+    /* vlen stores the number of dimensions, consistent with the documented Vector layout */
+    result->vlen = dim;
     result->dim = dim;
 
     return result;
@@ -143,6 +138,15 @@ TEST(PQTest, ParamsTest) {
     fakearray->length = samplenum;
     fakearray->dim = dim;
     fakearray->itemSize = MAXALIGN(VECTOR_SIZE(dim));
+    /* Training samples must contain finite values; VectorArrayInit leaves the items uninitialized */
+    for (int i = 0; i < samplenum; i++) {
+        Vector *vec = reinterpret_cast<Vector *>(fakearray->items + static_cast<size_t>(i) * fakearray->itemSize);
+        vec->vlen = dim;
+        vec->dim = static_cast<signed short>(dim);
+        for (int d = 0; d < dim; d++) {
+            vec->x[d] = static_cast<float>((i + d) % 97) * 0.01f;
+        }
+    }
     size_t itemSize = MAXALIGN(VECTOR_SIZE(dim / pqM));
     char *pqTable = static_cast<char *>(malloc(pqM * pqKsub * itemSize));
     PQParams params = {
@@ -463,8 +467,8 @@ TEST(GetPQDistanceTable_test, sdc_adc){
     float *qDis1 = (float*)malloc(4*4*sizeof(float));
     float *qDisSize = (float*)malloc(4*4*sizeof(float));
     float res2[16] = {0,1,4,9,9,16,25,36,36,49,64,81,81,100,121,144};
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params1, qDis1, pqM * pqKsub * pqKsub), 0);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params_size, qDisSize, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params1, qDis1, pqM * pqKsub), 0);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params_size, qDisSize, pqM * pqKsub), -1);
     for(int i = 0; i < 16; i++){
         EXPECT_EQ(res2[i], qDis1[i]);
     }
@@ -491,7 +495,7 @@ TEST(GetPQDistanceTable_test, sdc_adc){
 
     float *qDis2 = (float*)malloc(4*4*sizeof(float));
     float res4[16] = {0,0,0,0,-4,-5,-6,-7,-16,-18,-20,-22,-36,-39,-42,-45};
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params2, qDis2, pqM * pqKsub * pqKsub), 0);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params2, qDis2, pqM * pqKsub), 0);
     for(int i = 0; i < 16; i++){
         EXPECT_EQ(res4[i], qDis2[i]);
     }
@@ -510,8 +514,8 @@ TEST(GetPQDistanceTable_test, sdc_adc){
 
     EXPECT_EQ(GetPQDistanceTableSdc(nullptr, nullptr, pqM * pqKsub * pqKsub), -1);
     EXPECT_EQ(GetPQDistanceTableSdc(&params3, pqDistanceTable3, pqM * pqKsub * pqKsub), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(nullptr, nullptr, nullptr, pqM * pqKsub * pqKsub), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params3, qDis3, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(nullptr, nullptr, nullptr, pqM * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params3, qDis3, pqM * pqKsub), -1);
 
     PQParams params4 = {
             -1,
@@ -530,8 +534,8 @@ TEST(GetPQDistanceTable_test, sdc_adc){
             pqTable
     };
     EXPECT_EQ(GetPQDistanceTableSdc(&params4, pqDistanceTable3, pqM * pqKsub * pqKsub), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params4, qDis3, pqM * pqKsub * pqKsub), -1);
-    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params5, qDis3, pqM * pqKsub * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params4, qDis3, pqM * pqKsub), -1);
+    EXPECT_EQ(GetPQDistanceTableAdc(vector, &params5, qDis3, pqM * pqKsub), -1);
 
     free(pqDistanceTable3);
     free(qDis3);
@@ -539,4 +543,175 @@ TEST(GetPQDistanceTable_test, sdc_adc){
     for (int i = 0; i < 16; i++) {
         free(vectors[i]);
     }
+}
+
+TEST(ValidatePQTable_Test, ValidatePQTable){
+    int pqM = 4;
+    int dim = 8;
+    int pqKsub = 4;
+    int funcType = 1;
+    int dsub = dim / pqM;
+    size_t subItemSize = MAXALIGN(VECTOR_SIZE(dsub));
+    size_t totalSize = pqM * pqKsub * subItemSize;
+    char *pqTable = (char*)calloc(1, totalSize);
+    ASSERT_NE(pqTable, nullptr);
+
+    /* Fill every centroid with valid values */
+    for (int m = 0; m < pqM; m++) {
+        for (int k = 0; k < pqKsub; k++) {
+            Vector *centroid = (Vector*)(pqTable + (m * pqKsub + k) * subItemSize);
+            centroid->vlen = dsub;
+            centroid->dim = dsub;
+            for (int d = 0; d < dsub; d++) {
+                centroid->x[d] = (float)(m + k + d);
+            }
+        }
+    }
+
+    PQParams params = {pqM, pqKsub, funcType, dim, subItemSize, pqTable};
+    EXPECT_EQ(ValidatePQTable(&params, totalSize), 0);
+    /* Buffer shorter than pqM * pqKsub * subItemSize */
+    EXPECT_EQ(ValidatePQTable(&params, totalSize - 1), -1);
+    EXPECT_EQ(ValidatePQTable(nullptr, totalSize), -1);
+
+    PQParams paramsBadSubItem = {pqM, pqKsub, funcType, dim, subItemSize - 1, pqTable};
+    EXPECT_EQ(ValidatePQTable(&paramsBadSubItem, totalSize), -1);
+
+    PQParams paramsBadPqM = {0, pqKsub, funcType, dim, subItemSize, pqTable};
+    EXPECT_EQ(ValidatePQTable(&paramsBadPqM, totalSize), -1);
+
+    PQParams paramsBadKsub = {pqM, 0, funcType, dim, subItemSize, pqTable};
+    EXPECT_EQ(ValidatePQTable(&paramsBadKsub, totalSize), -1);
+
+    /* dim must be divisible by pqM */
+    PQParams paramsBadDim = {pqM, pqKsub, funcType, dim - 1, subItemSize, pqTable};
+    EXPECT_EQ(ValidatePQTable(&paramsBadDim, totalSize), -1);
+
+    /* A centroid poisoned by NaN must be rejected */
+    Vector *poisoned = (Vector*)(pqTable + 3 * subItemSize);
+    poisoned->x[0] = NAN;
+    EXPECT_EQ(ValidatePQTable(&params, totalSize), -1);
+
+    free(pqTable);
+}
+
+/*
+ * @brief Degenerate case: invalid values in training data or query vectors are rejected
+ */
+TEST(DegenerateInputTest, InvalidVectorValues) {
+    int dim = 40;
+    int pqM = 4;
+    int pqKsub = 3;
+    int samplenum = 20;
+    int dsub = dim / pqM;
+    size_t subItemSize = MAXALIGN(VECTOR_SIZE(dsub));
+    size_t pqTableSize = static_cast<size_t>(pqM) * pqKsub * subItemSize;
+
+    VectorArray samples = VectorArrayInit(samplenum, dim, VECTOR_SIZE(dim));
+    ASSERT_NE(samples, nullptr);
+    samples->length = samplenum;
+    samples->dim = dim;
+    for (int i = 0; i < samplenum; i++) {
+        Vector *vec = reinterpret_cast<Vector *>(samples->items + static_cast<size_t>(i) * samples->itemSize);
+        vec->vlen = dim;
+        vec->dim = static_cast<signed short>(dim);
+        for (int d = 0; d < dim; d++) {
+            vec->x[d] = static_cast<float>((i * 7 + d) % 13) * 0.1f;
+        }
+    }
+
+    char *pqTable = static_cast<char *>(calloc(1, pqTableSize));
+    ASSERT_NE(pqTable, nullptr);
+    PQParams params = {pqM, pqKsub, 1, dim, subItemSize, pqTable};
+
+    /* NaN / Inf / too large value in one training sample */
+    Vector *badSample = reinterpret_cast<Vector *>(samples->items + static_cast<size_t>(5) * samples->itemSize);
+    float saved = badSample->x[3];
+    badSample->x[3] = NAN;
+    EXPECT_EQ(ComputePQTable(samples, &params), -1);
+    badSample->x[3] = INFINITY;
+    EXPECT_EQ(ComputePQTable(samples, &params), -1);
+    badSample->x[3] = 1.0e18f;
+    EXPECT_EQ(ComputePQTable(samples, &params), -1);
+    badSample->x[3] = saved;
+    ASSERT_EQ(ComputePQTable(samples, &params), 0);
+
+    /* Invalid query vector for encoding */
+    float query[40] = {0};
+    unsigned char pqCode[4] = {0};
+    EXPECT_EQ(ComputeVectorPQCode(query, &params, pqCode, pqM), 0);
+    query[0] = NAN;
+    EXPECT_EQ(ComputeVectorPQCode(query, &params, pqCode, pqM), -1);
+    query[0] = INFINITY;
+    EXPECT_EQ(ComputeVectorPQCode(query, &params, pqCode, pqM), -1);
+    query[0] = 2.0e17f;
+    EXPECT_EQ(ComputeVectorPQCode(query, &params, pqCode, pqM), -1);
+    query[0] = 0.0f;
+
+    /* ADC table: exactly pqM * pqKsub entries are required */
+    float adcTable[12] = {0};
+    EXPECT_EQ(GetPQDistanceTableAdc(query, &params, adcTable, static_cast<size_t>(pqM) * pqKsub), 0);
+    EXPECT_EQ(GetPQDistanceTableAdc(query, &params, adcTable, static_cast<size_t>(pqM) * pqKsub - 1), -1);
+    query[0] = NAN;
+    EXPECT_EQ(GetPQDistanceTableAdc(query, &params, adcTable, static_cast<size_t>(pqM) * pqKsub), -1);
+
+    free(pqTable);
+    free(samples->items);
+    free(samples);
+}
+
+/*
+ * @brief Degenerate case: fewer training samples than centers must not produce zero code words
+ */
+TEST(DegenerateInputTest, SamplesFewerThanCenters) {
+    int dim = 8;
+    int pqM = 2;
+    int pqKsub = 4;
+    int samplenum = 2;
+    int dsub = dim / pqM;
+    size_t subItemSize = MAXALIGN(VECTOR_SIZE(dsub));
+    size_t pqTableSize = static_cast<size_t>(pqM) * pqKsub * subItemSize;
+
+    VectorArray samples = VectorArrayInit(samplenum, dim, VECTOR_SIZE(dim));
+    ASSERT_NE(samples, nullptr);
+    samples->length = samplenum;
+    samples->dim = dim;
+    for (int i = 0; i < samplenum; i++) {
+        Vector *vec = reinterpret_cast<Vector *>(samples->items + static_cast<size_t>(i) * samples->itemSize);
+        vec->vlen = dim;
+        vec->dim = static_cast<signed short>(dim);
+        for (int d = 0; d < dim; d++) {
+            vec->x[d] = static_cast<float>(i + 1) * static_cast<float>(d + 1);
+        }
+    }
+
+    char *pqTable = static_cast<char *>(calloc(1, pqTableSize));
+    ASSERT_NE(pqTable, nullptr);
+    PQParams params = {pqM, pqKsub, 1, dim, subItemSize, pqTable};
+
+    ASSERT_EQ(ComputePQTable(samples, &params), 0);
+    EXPECT_EQ(ValidatePQTable(&params, pqTableSize), 0);
+
+    /* Every code word must be finite and must not stay as an all-zero placeholder */
+    for (int m = 0; m < pqM; m++) {
+        for (int k = 0; k < pqKsub; k++) {
+            Vector *centroid = reinterpret_cast<Vector *>(pqTable + (m * pqKsub + k) * subItemSize);
+            bool allZero = true;
+            for (int d = 0; d < dsub; d++) {
+                EXPECT_TRUE(std::isfinite(centroid->x[d]));
+                if (centroid->x[d] != 0.0f) {
+                    allZero = false;
+                }
+            }
+            EXPECT_FALSE(allZero) << "zero code word at subspace " << m << ", center " << k;
+        }
+    }
+
+    /* An empty training set must be rejected instead of producing a zero codebook */
+    samples->length = 0;
+    EXPECT_EQ(ComputePQTable(samples, &params), -1);
+
+    free(pqTable);
+    free(samples->items);
+    free(samples);
 }
