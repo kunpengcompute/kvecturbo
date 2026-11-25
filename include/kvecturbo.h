@@ -6,8 +6,8 @@
 #ifndef KVECTURBO_H
 #define KVECTURBO_H
 
-#include <cstddef>
 #include <cfloat>
+#include <cstddef>
 #include <cstdint>
 
 #ifdef __cplusplus
@@ -63,8 +63,8 @@ typedef struct PQParams {
  * @param pqCode_size Length of pqCode
  * @return int Error code, 0 for success
  */
-KVEC_API_PUBLIC int ComputeVectorPQCode(
-    float *vector, const PQParams *params, unsigned char *pqCode, size_t pqCode_size);
+KVEC_API_PUBLIC int ComputeVectorPQCode(float *vector, const PQParams *params, unsigned char *pqCode,
+                                        size_t pqCode_size);
 
 /*
  * @brief Compute PQ codebook from training samples
@@ -103,8 +103,8 @@ KVEC_API_PUBLIC int GetPQDistanceTableSdc(const PQParams *params, float *pqDista
  * @param pqDistanceTable_size Length of pqDistanceTable, at least pqM * pqKsub
  * @return int Error code, 0 for success
  */
-KVEC_API_PUBLIC int GetPQDistanceTableAdc(
-    float *vector, const PQParams *params, float *pqDistanceTable, size_t pqDistanceTable_size);
+KVEC_API_PUBLIC int GetPQDistanceTableAdc(float *vector, const PQParams *params, float *pqDistanceTable,
+                                          size_t pqDistanceTable_size);
 
 /*
  * @brief Calculate PQ distance between two codes
@@ -121,13 +121,13 @@ KVEC_API_PUBLIC int GetPQDistanceTableAdc(
  * @return int Error code, 0 for success
  */
 KVEC_API_PUBLIC int GetPQDistance(const unsigned char *basecode, const unsigned char *querycode, const PQParams *params,
-    const float *pqDistanceTable, float *pqDistance, size_t basecode_size, size_t querycode_size,
-    size_t pqDistanceTable_size, size_t pqDistance_size);
+                                  const float *pqDistanceTable, float *pqDistance, size_t basecode_size,
+                                  size_t querycode_size, size_t pqDistanceTable_size, size_t pqDistance_size);
 
-}  // namespace PQHead
+} // namespace PQHead
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // KVECTURBO_H
+#endif // KVECTURBO_H

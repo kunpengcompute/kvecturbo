@@ -543,8 +543,8 @@ int ReseedEmptyCluster(const float *samples, float *newCenters, std::vector<int>
 
     if (maxCenter != -1 && maxCount > 1) {
         /* Split the largest cluster: copy its normalized center and perturb it slightly */
-        errno_t result = memcpy_s(target, centerSize, newCenters + static_cast<size_t>(maxCenter) * dimensions,
-                                  centerSize);
+        errno_t result =
+            memcpy_s(target, centerSize, newCenters + static_cast<size_t>(maxCenter) * dimensions, centerSize);
         if (result != 0) {
             std::cerr << "Error: memcpy_s failed with target and maxCenter: " << result << std::endl;
             return -1;
@@ -654,7 +654,8 @@ int ComputeNewCenters(const float *samples, float *agg, float *newCenters, std::
         if (centerCounts[j] > 0) {
             continue;
         }
-        if (ReseedEmptyCluster(samples, newCenters, centerCounts, j, numSamples, dimensions, numCenters, randGen) != 0) {
+        if (ReseedEmptyCluster(samples, newCenters, centerCounts, j, numSamples, dimensions, numCenters, randGen) !=
+            0) {
             std::cerr << "Error: Failed to reseed empty cluster " << j << std::endl;
             return -1;
         }
