@@ -33,7 +33,8 @@ kvecturbo
 ```
 
 ## 版本说明
-关于KVecTurbo的版本更新情况请参见[《版本说明书》](./docs/zh/release_notes.md)。
+
+关于KVecTurbo的版本更新情况请参见《[版本说明书](./docs/zh/release_notes.md)》。
 
 ## 学习文档
 
@@ -75,7 +76,7 @@ kvecturbo
 
 ## License
 
-KVecTurbo采用 Apache 2.0 License 许可证授权，支持修改代码和再开源，具体请参见[LICENSE](./LICENSE)文件。
+KVecTurbo采用Mulan PSL v2许可证授权，支持修改代码和再开源，具体请参见[LICENSE](./LICENSE)文件。
 
 本项目的文档适用CC-BY 4.0许可证，具体请参见[LICENSE](./docs/LICENSE)文件。
 
