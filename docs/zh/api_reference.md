@@ -1,5 +1,7 @@
 # API参考
 
+本文档提供KVecTurbo接口列表、结构体说明、以及ComputePQTable、ValidatePQTable、ComputeVectorPQCode、GetPQDistanceTableSdc、GetPQDistanceTableAdc、GetPQDistance六个接口的具体说明。
+
 ## 接口列表
 
 KVecTurbo提供的接口如[**表 1** KVecTurbo提供的接口](#KVecTurbo提供的接口)所示。
@@ -7,180 +9,40 @@ KVecTurbo提供的接口如[**表 1** KVecTurbo提供的接口](#KVecTurbo提供
 **表 1** KVecTurbo提供的接口<a id="KVecTurbo提供的接口"></a>
 
 <a name="table1194910128449"></a>
-<table><thead align="left"><tr id="row99491812134412"><th class="cellrowborder" valign="top" width="31.25%" id="mcps1.2.3.1.1"><p id="p1794951224415"><a name="p1794951224415"></a><a name="p1794951224415"></a>接口名称</p>
-</th>
-<th class="cellrowborder" valign="top" width="68.75%" id="mcps1.2.3.1.2"><p id="p6949612124415"><a name="p6949612124415"></a><a name="p6949612124415"></a>接口作用</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row712018285575"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p12121102835714"><a name="p12121102835714"></a><a name="p12121102835714"></a>ComputePQTable</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p111217289571"><a name="p111217289571"></a><a name="p111217289571"></a>计算PQ码本。</p>
-</td>
-</tr>
-<tr id="row_validate_pq_table_list"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p_validate_pq_table_list"><a name="p_validate_pq_table_list"></a><a name="p_validate_pq_table_list"></a>ValidatePQTable</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p_validate_pq_table_list_desc"><a name="p_validate_pq_table_list_desc"></a><a name="p_validate_pq_table_list_desc"></a>校验已加载的PQ码本是否可用。</p>
-</td>
-</tr>
-<tr id="row119491112174414"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p539219519167"><a name="p539219519167"></a><a name="p539219519167"></a>ComputeVectorPQCode</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p617774433819"><a name="p617774433819"></a><a name="p617774433819"></a>根据PQ码本，量化输入向量。</p>
-</td>
-</tr>
-<tr id="row9949131219443"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p1094921294415"><a name="p1094921294415"></a><a name="p1094921294415"></a>GetPQDistanceTableSdc</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p1794941284418"><a name="p1794941284418"></a><a name="p1794941284418"></a>计算PQ SDC距离表，即计算各个子空间内聚类中心之间的距离。</p>
-</td>
-</tr>
-<tr id="row1594913120443"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p472151416393"><a name="p472151416393"></a><a name="p472151416393"></a>GetPQDistanceTableAdc</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p1509193871710"><a name="p1509193871710"></a><a name="p1509193871710"></a>计算PQ ADC距离表，即计算查询向量和各个子空间内聚类中心的距离。</p>
-</td>
-</tr>
-<tr id="row6949131274416"><td class="cellrowborder" valign="top" width="31.25%" headers="mcps1.2.3.1.1 "><p id="p81502298399"><a name="p81502298399"></a><a name="p81502298399"></a>GetPQDistance</p>
-</td>
-<td class="cellrowborder" valign="top" width="68.75%" headers="mcps1.2.3.1.2 "><p id="p31521029163914"><a name="p31521029163914"></a><a name="p31521029163914"></a>计算PQ ADC或SDC距离。若querycode == NULL，计算的是ADC距离；若querycode != NULL，计算的是SDC距离。</p>
-</td>
-</tr>
-</tbody>
-</table>
+
+| 接口名称 | 接口作用 |
+| --- | --- |
+| ComputePQTable | 计算PQ码本。 |
+| ValidatePQTable | 校验已加载的PQ码本是否可用。 |
+| ComputeVectorPQCode | 根据PQ码本，量化输入向量。 |
+| GetPQDistanceTableSdc | 计算PQ SDC距离表，即计算各个子空间内聚类中心之间的距离。 |
+| GetPQDistanceTableAdc | 计算PQ ADC距离表，即计算查询向量和各个子空间内聚类中心的距离。 |
+| GetPQDistance | 计算PQ ADC或SDC距离。若querycode == NULL，计算的是ADC距离；若querycode != NULL，计算的是SDC距离。 |
 
 ## 结构体说明
 
-KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“两类结构体，详细参数描述如[**表 1** 结构体VectorArray字段描述](#结构体VectorArray字段描述)和[**表 2** 结构体PQParams字段描述](#结构体PQParams字段描述)所示。
+KVecTurbo提供的接口所使用参数涉及“VectorArray“和“PQParams“两类结构体，详细参数描述如**表 1** 结构体VectorArray字段描述和**表 2** 结构体PQParams字段描述所示。
 
 **表 1** 结构体VectorArray字段描述<a id="结构体VectorArray字段描述"></a>
 
-<a name="table1646711617442"></a>
-<table><thead align="left"><tr id="row846751612442"><th class="cellrowborder" valign="top" width="16.27%" id="mcps1.2.5.1.1"><p id="p81762043154713"><a name="p81762043154713"></a><a name="p81762043154713"></a>字段名称</p>
-</th>
-<th class="cellrowborder" valign="top" width="21.82%" id="mcps1.2.5.1.2"><p id="p4377125320521"><a name="p4377125320521"></a><a name="p4377125320521"></a><strong id="b1137765315529"><a name="b1137765315529"></a><a name="b1137765315529"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="18.88%" id="mcps1.2.5.1.3"><p id="p335712558441"><a name="p335712558441"></a><a name="p335712558441"></a><strong id="b153571755154417"><a name="b153571755154417"></a><a name="b153571755154417"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="43.03%" id="mcps1.2.5.1.4"><p id="p8357955164412"><a name="p8357955164412"></a><a name="p8357955164412"></a><strong id="b335775510441"><a name="b335775510441"></a><a name="b335775510441"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row18468216154410"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p8902349194711"><a name="p8902349194711"></a><a name="p8902349194711"></a>maxLen</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p4377115320525"><a name="p4377115320525"></a><a name="p4377115320525"></a>向量最大个数。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p784815918455"><a name="p784815918455"></a><a name="p784815918455"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p484829144516"><a name="p484829144516"></a><a name="p484829144516"></a>若取值过大，可能因系统内存资源限制导致内存分配操作失败。</p>
-</td>
-</tr>
-<tr id="row4356161812514"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p1236742011517"><a name="p1236742011517"></a><a name="p1236742011517"></a>length</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p1936720201356"><a name="p1936720201356"></a><a name="p1936720201356"></a>向量个数。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p123673202050"><a name="p123673202050"></a><a name="p123673202050"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p1836710201655"><a name="p1836710201655"></a><a name="p1836710201655"></a>[1,maxLen]，其中<span class="parmname" id="parmname152384663517"><a name="parmname152384663517"></a><a name="parmname152384663517"></a>“maxLen”</span>是结构体<span class="parmname" id="parmname18437102572918"><a name="parmname18437102572918"></a><a name="parmname18437102572918"></a>“VectorArray”</span>中的字段，表示向量最大个数。</p>
-</td>
-</tr>
-<tr id="row746811684410"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p159021849104714"><a name="p159021849104714"></a><a name="p159021849104714"></a>dim</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p12377153155215"><a name="p12377153155215"></a><a name="p12377153155215"></a>向量维度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p48488911459"><a name="p48488911459"></a><a name="p48488911459"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p08481993451"><a name="p08481993451"></a><a name="p08481993451"></a>[1,2000]</p>
-</td>
-</tr>
-<tr id="row84681167446"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p1190210496473"><a name="p1190210496473"></a><a name="p1190210496473"></a>itemSize</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p2377753175214"><a name="p2377753175214"></a><a name="p2377753175214"></a>单个向量长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p1784811934515"><a name="p1784811934515"></a><a name="p1784811934515"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p16848139174518"><a name="p16848139174518"></a><a name="p16848139174518"></a>限制非0。</p>
-</td>
-</tr>
-<tr id="row11468101614449"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p1290213494474"><a name="p1290213494474"></a><a name="p1290213494474"></a>items</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p163771553175210"><a name="p163771553175210"></a><a name="p163771553175210"></a>length个向量首地址。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p28481299458"><a name="p28481299458"></a><a name="p28481299458"></a>char*</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p13848119154518"><a name="p13848119154518"></a><a name="p13848119154518"></a>限制非空。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 字段名称 | 描述 | 数据类型 | 取值范围 |
+| --- | --- | --- | --- |
+| maxLen | 向量最大个数。 | int | 若取值过大，可能因系统内存资源限制导致内存分配操作失败。 |
+| length | 向量个数。 | int | [1,maxLen]，其中“maxLen”是结构体“VectorArray”中的字段，表示向量最大个数。 |
+| dim | 向量维度。 | int | [1,2000] |
+| itemSize | 单个向量长度。 | size_t | 限制非0。 |
+| items | length个向量首地址。 | char* | 限制非空。 |
 
-**表 2** 结构体PQParams字段描述<a id="结构体PQParams字段描述"></a>
+**表 2** 结构体PQParams字段描述<a id="tb2"></a>
 
-<a name="table11706934103516"></a>
-<table><thead align="left"><tr id="row11414124012358"><th class="cellrowborder" valign="top" width="16.27%" id="mcps1.2.5.1.1"><p id="p82251946143516"><a name="p82251946143516"></a><a name="p82251946143516"></a>字段名称</p>
-</th>
-<th class="cellrowborder" valign="top" width="21.82%" id="mcps1.2.5.1.2"><p id="p102251046193511"><a name="p102251046193511"></a><a name="p102251046193511"></a><strong id="b9225194613512"><a name="b9225194613512"></a><a name="b9225194613512"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="18.88%" id="mcps1.2.5.1.3"><p id="p16225194616358"><a name="p16225194616358"></a><a name="p16225194616358"></a><strong id="b1722524613356"><a name="b1722524613356"></a><a name="b1722524613356"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="43.03%" id="mcps1.2.5.1.4"><p id="p102251446143517"><a name="p102251446143517"></a><a name="p102251446143517"></a><strong id="b18225114653515"><a name="b18225114653515"></a><a name="b18225114653515"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row11788163121319"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p125529339138"><a name="p125529339138"></a><a name="p125529339138"></a>dim</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p17552633101319"><a name="p17552633101319"></a><a name="p17552633101319"></a>维度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p135521633171317"><a name="p135521633171317"></a><a name="p135521633171317"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p12552193321320"><a name="p12552193321320"></a><a name="p12552193321320"></a>[1,2000]</p>
-</td>
-</tr>
-<tr id="row9706834203510"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p6902174915472"><a name="p6902174915472"></a><a name="p6902174915472"></a>pqM</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p17377175319523"><a name="p17377175319523"></a><a name="p17377175319523"></a>子空间数。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p38481898457"><a name="p38481898457"></a><a name="p38481898457"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p15848209134510"><a name="p15848209134510"></a><a name="p15848209134510"></a>[1,dim]，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“dim”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示向量维度。</p>
-</td>
-</tr>
-<tr id="row167067341356"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p169031449134713"><a name="p169031449134713"></a><a name="p169031449134713"></a>pqKsub</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p33781853165216"><a name="p33781853165216"></a><a name="p33781853165216"></a>子空间内聚类中心数。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p2848159114511"><a name="p2848159114511"></a><a name="p2848159114511"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p28487964518"><a name="p28487964518"></a><a name="p28487964518"></a>[1,256]</p>
-</td>
-</tr>
-<tr id="row3706173411353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p15903249194711"><a name="p15903249194711"></a><a name="p15903249194711"></a>funcType</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p10378553185217"><a name="p10378553185217"></a><a name="p10378553185217"></a>距离类型。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p48488911458"><a name="p48488911458"></a><a name="p48488911458"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p1260341310305"><a name="p1260341310305"></a><a name="p1260341310305"></a>[1,3]</p>
-<a name="ul7615133223018"></a><a name="ul7615133223018"></a><ul id="ul7615133223018"><li>1：表示L2类型。</li><li>2：表示IP类型。</li><li>3：表示Cosine类型。</li></ul>
-</td>
-</tr>
-<tr id="row4707934123513"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p209032495474"><a name="p209032495474"></a><a name="p209032495474"></a>subItemSize</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p6378053195212"><a name="p6378053195212"></a><a name="p6378053195212"></a>码字大小，必须为对齐后的子向量大小：(8 + 4 * (dim / pqM)) 按 MAXIMUM_ALIGNOF 向上对齐。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p2849991457"><a name="p2849991457"></a><a name="p2849991457"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p98491298451"><a name="p98491298451"></a><a name="p98491298451"></a>必须精确等于 (8 + 4 * (dim / pqM)) 按 MAXIMUM_ALIGNOF 向上对齐后的值，否则接口返回 -1。</p>
-</td>
-</tr>
-<tr id="row1670718344353"><td class="cellrowborder" valign="top" width="16.27%" headers="mcps1.2.5.1.1 "><p id="p19903154912477"><a name="p19903154912477"></a><a name="p19903154912477"></a>pqTable</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.82%" headers="mcps1.2.5.1.2 "><p id="p9378175375213"><a name="p9378175375213"></a><a name="p9378175375213"></a>码本。</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.88%" headers="mcps1.2.5.1.3 "><p id="p88493920454"><a name="p88493920454"></a><a name="p88493920454"></a>char*</p>
-</td>
-<td class="cellrowborder" valign="top" width="43.03%" headers="mcps1.2.5.1.4 "><p id="p6849189154513"><a name="p6849189154513"></a>限制非空，容量至少为 pqM * pqKsub * subItemSize 字节。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 字段名称 | 描述 | 数据类型 | 取值范围 |
+| --- | --- | --- | --- |
+| dim | 维度。 | int | [1,2000] |
+| pqM | 子空间数。 | int | [1,dim]，其中“dim”是结构体“PQParams”中的字段，表示向量维度。 |
+| pqKsub | 子空间内聚类中心数。 | int | [1,256] |
+| funcType | 距离类型。 | int | [1,3]；1：表示L2类型；2：表示IP类型；3：表示Cosine类型。 |
+| subItemSize | 码字大小，必须为对齐后的子向量大小：(8 + 4 * (dim / pqM)) 按 MAXIMUM_ALIGNOF 向上对齐。 | size_t | 必须精确等于 (8 + 4 * (dim / pqM)) 按 MAXIMUM_ALIGNOF 向上对齐后的值，否则接口返回 -1。 |
+| pqTable | 码本。 | char* | 限制非空，容量至少为 pqM \* pqKsub \* subItemSize 字节。 |
 
 ## ComputePQTable
 
@@ -194,59 +56,27 @@ int ComputePQTable\(VectorArray samples, PQParams \*params\);
 
 **参数说明<a name="section157501312135019"></a>**
 
-<a name="table4285822103716"></a>
-<table><thead align="left"><tr id="row1286152233717"><th class="cellrowborder" valign="top" width="15.39%" id="mcps1.1.5.1.1"><p id="p1028632213373"><a name="p1028632213373"></a><a name="p1028632213373"></a><strong id="b229432916375"><a name="b229432916375"></a><a name="b229432916375"></a>参数名称</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="19.24%" id="mcps1.1.5.1.2"><p id="p426420913521"><a name="p426420913521"></a><a name="p426420913521"></a><strong id="b1657933643718"><a name="b1657933643718"></a><a name="b1657933643718"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="35.3%" id="mcps1.1.5.1.3"><p id="p16579163614371"><a name="p16579163614371"></a><a name="p16579163614371"></a><strong id="b65791236113717"><a name="b65791236113717"></a><a name="b65791236113717"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="30.070000000000004%" id="mcps1.1.5.1.4"><p id="p1657912363375"><a name="p1657912363375"></a><a name="p1657912363375"></a><strong id="b55791367373"><a name="b55791367373"></a><a name="b55791367373"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row16286112213372"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p1244551123717"><a name="p1244551123717"></a><a name="p1244551123717"></a>samples</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p1726499165213"><a name="p1726499165213"></a><a name="p1726499165213"></a>VectorArray</p>
-</td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p928622293716"><a name="p928622293716"></a><a name="p928622293716"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname0442121133711"><a name="parmname0442121133711"></a><a name="parmname0442121133711"></a>“VectorArray”</span>字段描述。每个样本的每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。</p>
-</td>
-</tr>
-<tr id="row6286022173712"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p1596013543378"><a name="p1596013543378"></a><a name="p1596013543378"></a>params</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p226410910524"><a name="p226410910524"></a><a name="p226410910524"></a>PQParams</p>
-</td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname7604423173715"><a name="parmname7604423173715"></a><a name="parmname7604423173715"></a>“PQParams”</span>字段描述。其中，<span class="parmname" id="parmname1493894154317"><a name="parmname1493894154317"></a><a name="parmname1493894154317"></a>“pqTable”</span>必须指向调用方预先分配的缓冲区，容量至少为 pqM * pqKsub * subItemSize 字节。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 参数名称 | 数据类型 | 描述 |
+| --- | --- | --- |
+| samples | VectorArray | 字段描述请参见[结构体说明](#结构体说明)中的“VectorArray”字段描述。每个样本的每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。 |
+| params | PQParams | 字段描述请参见[结构体说明](#结构体说明)中的“PQParams”字段描述。其中，“pqTable”必须指向调用方预先分配的缓冲区，容量至少为 pqM \* pqKsub \* subItemSize 字节。 |
 
 **返回值<a name="section49971832106"></a>**
 
 <a name="table17997635100"></a>
-<table><thead align="left"><tr id="row699763141018"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p id="p699793141012"><a name="p699793141012"></a><a name="p699793141012"></a>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p id="p1999763141020"><a name="p1999763141020"></a><a name="p1999763141020"></a>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row1599716361015"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p id="p39970319101"><a name="p39970319101"></a><a name="p39970319101"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p id="p53461032104518"><a name="p53461032104518"></a><a name="p53461032104518"></a>正常运行时返回0，异常退出返回-1。</p>
-</td>
-</tr>
-</tbody>
-</table>
+
+| 数据类型 | 说明 |
+| --- | --- |
+| int | 正常运行时返回0，异常退出返回-1。 |
 
 **注意事项**
 
-- **缓冲区归属与容量责任**：`params->pqTable` 指向由调用方分配并持有的缓冲区，本接口按 `pqM × pqKsub × subItemSize` 字节写入码本。接口不含容量参数，**不校验缓冲区实际容量**，容量正确性由调用方保证。
-- **容量不足的后果**：若缓冲区小于所需容量，本接口不会返回 -1（容量不在入口校验范围内），越界写入将造成堆内存破坏，通常表现为远离调用点的崩溃，无法通过返回值检测。
-- **容量必须在调用前预先保证**：调用本接口之前，必须按下方公式为 `params->pqTable` 分配 `pqM × pqKsub × subItemSize` 字节，这是避免堆越界写入的唯一有效控制点。
-- **自检建议（仅事后侦测）**：本接口返回 0 后，可用真实分配容量调用 `ValidatePQTable(params, pqTableSize)` 复核码本缓冲区容量与质心数值合法性；但它只能在越界写已经发生之后才发现容量不足，无法阻止堆破坏，不能替代预分配。
+- **缓冲区归属与容量责任**：`params->pqTable`指向由调用方分配并持有的缓冲区，本接口按`pqM × pqKsub × subItemSize`字节写入码本。接口不含容量参数，**不校验缓冲区实际容量**，容量正确性由调用方保证。
+- **容量不足的后果**：若缓冲区小于所需容量，本接口不会返回-1（容量不在入口校验范围内），越界写入将造成堆内存破坏，通常表现为远离调用点的崩溃，无法通过返回值检测。
+- **容量必须在调用前预先保证**：调用本接口之前，必须按下方公式为`params->pqTable`分配`pqM × pqKsub × subItemSize`字节，这是避免堆越界写入的唯一有效控制点。
+- **自检建议（仅事后侦测）**：本接口返回0后，可用真实分配容量调用`ValidatePQTable(params, pqTableSize)`复核码本缓冲区容量与质心数值合法性；但它只能在越界写已经发生之后才发现容量不足，无法阻止堆破坏，不能替代预分配。
 
-码本缓冲区的标准分配公式（使用 `size_t` 计算）：
+码本缓冲区的标准分配公式（使用`size_t`计算）：
 
 ```c
 /* subItemSize：Vector 头（8 字节）+ dsub 个 float，按 MAXIMUM_ALIGNOF 向上对齐 */
@@ -256,7 +86,7 @@ params.subItemSize = (sizeof(Vector) + sizeof(float) * (dim / pqM)
 size_t pqTableSize = (size_t)pqM * pqKsub * params.subItemSize;
 ```
 
-其中 `sizeof(Vector)` 头部为 8 字节（`vlen`、`dim`、`unused` 三个字段，`vlen` 填向量维度、与 `dim` 相同），`MAXIMUM_ALIGNOF` 为 8。`pqKsub` 大于训练样本数时，实际聚类数被钳制为样本数并对已有质心取模复用，写入总量不变。
+其中`sizeof(Vector)`头部为8字节（`vlen`、`dim`、`unused`三个字段，`vlen`填向量维度、与`dim`相同），`MAXIMUM_ALIGNOF`为8。`pqKsub`大于训练样本数时，实际聚类数被钳制为样本数并对已有质心取模复用，写入总量不变。
 
 **使用示例**
 
@@ -351,52 +181,24 @@ int ValidatePQTable\(const PQParams \*params, size_t pqTableSize\);
 
 **接口用途**
 
-校验调用方加载的PQ码本是否可用。建议在载入持久化码本后调用一次，可拦截早期版本或异常训练数据产生的含NaN/Inf、超出取值范围的质心，避免后续查询静默返回错误结果。在 `ComputePQTable` 返回 0 后调用可用于事后侦测码本缓冲区容量不足或质心数值非法，但此时越界写可能已经发生、无法预防；缓冲区容量必须在调用 `ComputePQTable` 之前按公式自行分配（详见其"注意事项"）。
+校验调用方加载的PQ码本是否可用。建议在载入持久化码本后调用一次，可拦截早期版本或异常训练数据产生的含NaN/Inf、超出取值范围的质心，避免后续查询静默返回错误结果。在 `ComputePQTable`返回0后调用可用于事后侦测码本缓冲区容量不足或质心数值非法，但此时越界写可能已经发生、无法预防；缓冲区容量必须在调用`ComputePQTable`之前按公式自行分配（详见其"注意事项"）。
 
 **参数说明<a name="section_validate_pq_table_params"></a>**
 
 <a name="table_validate_pq_table_params"></a>
-<table><thead align="left"><tr id="row_validate_pq_table_params_head"><th class="cellrowborder" valign="top" width="15.39%" id="mcps1.1.5.1.1"><p>参数名称</p>
-</th>
-<th class="cellrowborder" valign="top" width="19.24%" id="mcps1.1.5.1.2"><p>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="65.37%" id="mcps1.1.5.1.3"><p>描述</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row_validate_pq_table_params"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p>params</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p>PQParams</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.3 "><p>PQ算法参数，其中pqTable指向待校验的码本缓冲区。字段描述请参见结构体说明中的“PQParams”字段描述。</p>
-</td>
-</tr>
-<tr id="row_validate_pq_table_size"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p>pqTableSize</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.3 "><p>码本缓冲区长度（字节），至少为pqM * pqKsub * subItemSize。</p>
-</td>
-</tr>
-</tbody>
-</table>
+
+| 参数名称 | 数据类型 | 描述 |
+| --- | --- | --- |
+| params | PQParams | PQ算法参数，其中pqTable指向待校验的码本缓冲区。字段描述请参见结构体说明中的“PQParams”字段描述。 |
+| pqTableSize | size_t | 码本缓冲区长度（字节），至少为pqM \* pqKsub \* subItemSize。 |
 
 **返回值<a name="section_validate_pq_table_return"></a>**
 
 <a name="table_validate_pq_table_return"></a>
-<table><thead align="left"><tr id="row_validate_pq_table_return_head"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row_validate_pq_table_return"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p>码本合法返回0；参数不合法、缓冲区容量不足或质心取值非法（NaN/Inf 或任一分量绝对值超过 1e17）时返回-1。</p>
-</td>
-</tr>
-</tbody>
-</table>
+
+| 数据类型 | 说明 |
+| --- | --- |
+| int | 码本合法返回0；参数不合法、缓冲区容量不足或质心取值非法（NaN/Inf 或任一分量绝对值超过 1e17）时返回-1。 |
 
 ## ComputeVectorPQCode
 
@@ -410,70 +212,20 @@ int ComputeVectorPQCode\(float \*vector, const PQParams \*params, unsigned char 
 
 **参数说明<a name="section157501312135019"></a>**
 
-<a name="table1646711617442"></a>
-<table><thead align="left"><tr id="row846751612442"><th class="cellrowborder" valign="top" width="16.06%" id="mcps1.1.5.1.1"><p id="p1035755516441"><a name="p1035755516441"></a><a name="p1035755516441"></a><strong id="b535775554413"><a name="b535775554413"></a><a name="b535775554413"></a>参数名称</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="18.56%" id="mcps1.1.5.1.2"><p id="p335712558441"><a name="p335712558441"></a><a name="p335712558441"></a><strong id="b153571755154417"><a name="b153571755154417"></a><a name="b153571755154417"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="33.85%" id="mcps1.1.5.1.3"><p id="p577354119532"><a name="p577354119532"></a><a name="p577354119532"></a><strong id="b9773541165316"><a name="b9773541165316"></a><a name="b9773541165316"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="31.53%" id="mcps1.1.5.1.4"><p id="p8357955164412"><a name="p8357955164412"></a><a name="p8357955164412"></a><strong id="b335775510441"><a name="b335775510441"></a><a name="b335775510441"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row146815169448"><td class="cellrowborder" valign="top" width="16.06%" headers="mcps1.1.5.1.1 "><p id="p18290135419477"><a name="p18290135419477"></a><a name="p18290135419477"></a>vector</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.56%" headers="mcps1.1.5.1.2 "><p id="p5290654174714"><a name="p5290654174714"></a><a name="p5290654174714"></a>float *</p>
-</td>
-<td class="cellrowborder" valign="top" width="33.85%" headers="mcps1.1.5.1.3 "><p id="p197735413538"><a name="p197735413538"></a><a name="p197735413538"></a>原始向量。</p>
-</td>
-<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p1829095424711"><a name="p1829095424711"></a><a name="p1829095424711"></a>限制非空；每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。</p>
-</td>
-</tr>
-<tr id="row18468216154410"><td class="cellrowborder" valign="top" width="16.06%" headers="mcps1.1.5.1.1 "><p id="p2290754114711"><a name="p2290754114711"></a><a name="p2290754114711"></a>pqCode</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.56%" headers="mcps1.1.5.1.2 "><p id="p112901054164717"><a name="p112901054164717"></a><a name="p112901054164717"></a>unsigned char *</p>
-</td>
-<td class="cellrowborder" valign="top" width="33.85%" headers="mcps1.1.5.1.3 "><p id="p17773144119539"><a name="p17773144119539"></a><a name="p17773144119539"></a>量化后的向量。也可以作为输出值。</p>
-</td>
-<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p184321218164110"><a name="p184321218164110"></a><a name="p184321218164110"></a>限制非空。长度为pqCode_size，其中<span class="parmname" id="parmname5730023802"><a name="parmname5730023802"></a><a name="parmname5730023802"></a>“pqCode_size”</span>为量化后向量数组的长度。</p>
-</td>
-</tr>
-<tr id="row1097711208581"><td class="cellrowborder" valign="top" width="16.06%" headers="mcps1.1.5.1.1 "><p id="p18978152020588"><a name="p18978152020588"></a><a name="p18978152020588"></a>pqCode_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="18.56%" headers="mcps1.1.5.1.2 "><p id="p18978920195820"><a name="p18978920195820"></a><a name="p18978920195820"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="33.85%" headers="mcps1.1.5.1.3 "><p id="p1197892016583"><a name="p1197892016583"></a><a name="p1197892016583"></a>量化后向量数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="31.53%" headers="mcps1.1.5.1.4 "><p id="p169783208589"><a name="p169783208589"></a><a name="p169783208589"></a>限制为pqM，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“pqM”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示子空间数。</p>
-</td>
-</tr>
-<tr id="row746811684410"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p1329075411477"><a name="p1329075411477"></a><a name="p1329075411477"></a>params</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p8969751950"><a name="p8969751950"></a><a name="p8969751950"></a>const PQParams</p>
-</td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname2632102712379"><a name="parmname2632102712379"></a><a name="parmname2632102712379"></a>“PQParams”</span>字段描述。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 参数名称 | 数据类型 | 描述 | 取值范围 |
+| --- | --- | --- | --- |
+| vector | float * | 原始向量。 | 限制非空；每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。 |
+| pqCode | unsigned char * | 量化后的向量。也可以作为输出值。 | 限制非空。长度为pqCode_size，其中“pqCode_size”为量化后向量数组的长度。 |
+| pqCode_size | size_t | 量化后向量数组的长度。 | 限制为pqM，其中“pqM”是结构体“PQParams”中的字段，表示子空间数。 |
+| params | const PQParams | 字段描述请参见[结构体说明](#结构体说明)中的“PQParams”字段描述。 | - |
 
 **返回值<a name="section49971832106"></a>**
 
 <a name="table17997635100"></a>
-<table><thead align="left"><tr id="row699763141018"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p id="p699793141012"><a name="p699793141012"></a><a name="p699793141012"></a>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p id="p1999763141020"><a name="p1999763141020"></a><a name="p1999763141020"></a>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row1599716361015"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p id="p39970319101"><a name="p39970319101"></a><a name="p39970319101"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p id="p53461032104518"><a name="p53461032104518"></a><a name="p53461032104518"></a>正常运行时返回0，异常退出返回-1。</p>
-</td>
-</tr>
-</tbody>
-</table>
+
+| 数据类型 | 说明 |
+| --- | --- |
+| int | 正常运行时返回0，异常退出返回-1。 |
 
 **使用示例**
 
@@ -551,61 +303,19 @@ int GetPQDistanceTableSdc\(const PQParams \*params, float \*pqDistanceTable, siz
 
 **参数说明<a name="section157501312135019"></a>**
 
-<a name="table1646711617442"></a>
-<table><thead align="left"><tr id="row846751612442"><th class="cellrowborder" valign="top" width="18.94810518948105%" id="mcps1.1.5.1.1"><p id="p1035755516441"><a name="p1035755516441"></a><a name="p1035755516441"></a><strong id="b535775554413"><a name="b535775554413"></a><a name="b535775554413"></a>参数名称</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="17.408259174082595%" id="mcps1.1.5.1.2"><p id="p335712558441"><a name="p335712558441"></a><a name="p335712558441"></a><strong id="b153571755154417"><a name="b153571755154417"></a><a name="b153571755154417"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="31.586841315868412%" id="mcps1.1.5.1.3"><p id="p1161011635413"><a name="p1161011635413"></a><a name="p1161011635413"></a><strong id="b26101665540"><a name="b26101665540"></a><a name="b26101665540"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="32.056794320567946%" id="mcps1.1.5.1.4"><p id="p8357955164412"><a name="p8357955164412"></a><a name="p8357955164412"></a><strong id="b335775510441"><a name="b335775510441"></a><a name="b335775510441"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row146815169448"><td class="cellrowborder" valign="top" width="18.94810518948105%" headers="mcps1.1.5.1.1 "><p id="p19390163034918"><a name="p19390163034918"></a><a name="p19390163034918"></a>pqDistanceTable</p>
-</td>
-<td class="cellrowborder" valign="top" width="17.408259174082595%" headers="mcps1.1.5.1.2 "><p id="p11390103044916"><a name="p11390103044916"></a><a name="p11390103044916"></a>float*</p>
-</td>
-<td class="cellrowborder" valign="top" width="31.586841315868412%" headers="mcps1.1.5.1.3 "><p id="p1461013614543"><a name="p1461013614543"></a><a name="p1461013614543"></a>SDC距离表。也可以作为输出值。</p>
-</td>
-<td class="cellrowborder" valign="top" width="32.056794320567946%" headers="mcps1.1.5.1.4 "><p id="p93901930134918"><a name="p93901930134918"></a><a name="p93901930134918"></a>限制非空。长度为pqDistanceTable_size，其中<span class="parmname" id="parmname5730023802"><a name="parmname5730023802"></a><a name="parmname5730023802"></a>“pqDistanceTable_size”</span>为SDC距离表数组的长度。</p>
-</td>
-</tr>
-<tr id="row1827017313116"><td class="cellrowborder" valign="top" width="18.94810518948105%" headers="mcps1.1.5.1.1 "><p id="p17270143818"><a name="p17270143818"></a><a name="p17270143818"></a>pqDistanceTable_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="17.408259174082595%" headers="mcps1.1.5.1.2 "><p id="p32701332011"><a name="p32701332011"></a><a name="p32701332011"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="31.586841315868412%" headers="mcps1.1.5.1.3 "><p id="p18270031811"><a name="p18270031811"></a><a name="p18270031811"></a>SDC距离表数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="32.056794320567946%" headers="mcps1.1.5.1.4 "><p id="p2270133219"><a name="p2270133219"></a><a name="p2270133219"></a>限制为pqM*pqKsub*pqKsub，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“pqM”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示子空间数，<span class="parmname" id="parmname1924714131720"><a name="parmname1924714131720"></a><a name="parmname1924714131720"></a>“pqKsub”</span>是结构体<span class="parmname" id="parmname17247413229"><a name="parmname17247413229"></a><a name="parmname17247413229"></a>“PQParams”</span>中的字段，表示子空间内聚类中心数。</p>
-</td>
-</tr>
-<tr id="row18468216154410"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p129318508517"><a name="p129318508517"></a><a name="p129318508517"></a>params</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p550413473510"><a name="p550413473510"></a><a name="p550413473510"></a>const PQParams</p>
-</td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname1734613325371"><a name="parmname1734613325371"></a><a name="parmname1734613325371"></a>“PQParams”</span>字段描述。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 参数名称 | 数据类型 | 描述 | 取值范围 |
+| --- | --- | --- | --- |
+| pqDistanceTable | float* | SDC距离表。也可以作为输出值。 | 限制非空。长度为pqDistanceTable_size，其中“pqDistanceTable_size”为SDC距离表数组的长度。 |
+| pqDistanceTable_size | size_t | SDC距离表数组的长度。 | 限制为pqM*pqKsub*pqKsub，其中“pqM”是结构体“PQParams”中的字段，表示子空间数，“pqKsub”是结构体“PQParams”中的字段，表示子空间内聚类中心数。 |
+| params | const PQParams | 字段描述请参见[结构体说明](#结构体说明)中的“PQParams”字段描述。 | - |
 
 **返回值<a name="section49971832106"></a>**
 
 <a name="table17997635100"></a>
-<table><thead align="left"><tr id="row699763141018"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p id="p699793141012"><a name="p699793141012"></a><a name="p699793141012"></a>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p id="p1999763141020"><a name="p1999763141020"></a><a name="p1999763141020"></a>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row1599716361015"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p id="p39970319101"><a name="p39970319101"></a><a name="p39970319101"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p id="p53461032104518"><a name="p53461032104518"></a><a name="p53461032104518"></a>正常运行时返回0，异常退出返回-1。</p>
-</td>
-</tr>
-</tbody>
-</table>
+
+| 数据类型 | 说明 |
+| --- | --- |
+| int | 正常运行时返回0，异常退出返回-1。 |
 
 **使用示例**
 
@@ -679,70 +389,18 @@ int GetPQDistanceTableAdc\(float\* vector, const PQParams \*params, float \*pqDi
 
 **参数说明<a name="section157501312135019"></a>**
 
-<a name="table1646711617442"></a>
-<table><thead align="left"><tr id="row846751612442"><th class="cellrowborder" valign="top" width="18.34%" id="mcps1.1.5.1.1"><p id="p1035755516441"><a name="p1035755516441"></a><a name="p1035755516441"></a><strong id="b535775554413"><a name="b535775554413"></a><a name="b535775554413"></a>参数名称</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="16.11%" id="mcps1.1.5.1.2"><p id="p335712558441"><a name="p335712558441"></a><a name="p335712558441"></a><strong id="b153571755154417"><a name="b153571755154417"></a><a name="b153571755154417"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="35.23%" id="mcps1.1.5.1.3"><p id="p11531628175416"><a name="p11531628175416"></a><a name="p11531628175416"></a><strong id="b15372812545"><a name="b15372812545"></a><a name="b15372812545"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="30.320000000000004%" id="mcps1.1.5.1.4"><p id="p8357955164412"><a name="p8357955164412"></a><a name="p8357955164412"></a><strong id="b335775510441"><a name="b335775510441"></a><a name="b335775510441"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row146815169448"><td class="cellrowborder" valign="top" width="18.34%" headers="mcps1.1.5.1.1 "><p id="p3391114550"><a name="p3391114550"></a><a name="p3391114550"></a>vector</p>
-</td>
-<td class="cellrowborder" valign="top" width="16.11%" headers="mcps1.1.5.1.2 "><p id="p1539161116559"><a name="p1539161116559"></a><a name="p1539161116559"></a>float*</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p19533285546"><a name="p19533285546"></a><a name="p19533285546"></a>原始向量。</p>
-</td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p153918116557"><a name="p153918116557"></a><a name="p153918116557"></a>限制非空；每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。</p>
-</td>
-</tr>
-<tr id="row18468216154410"><td class="cellrowborder" valign="top" width="18.34%" headers="mcps1.1.5.1.1 "><p id="p939711155514"><a name="p939711155514"></a><a name="p939711155514"></a>pqDistanceTable</p>
-</td>
-<td class="cellrowborder" valign="top" width="16.11%" headers="mcps1.1.5.1.2 "><p id="p439181115515"><a name="p439181115515"></a><a name="p439181115515"></a>float*</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p45318284546"><a name="p45318284546"></a><a name="p45318284546"></a>ADC距离表。也可以作为输出值。</p>
-</td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p143911120557"><a name="p143911120557"></a><a name="p143911120557"></a>限制非空。长度为pqDistanceTable_size，其中<span class="parmname" id="parmname5730023802"><a name="parmname5730023802"></a><a name="parmname5730023802"></a>“pqDistanceTable_size”</span>为ADC距离表数组的长度。</p>
-</td>
-</tr>
-<tr id="row44811238446"><td class="cellrowborder" valign="top" width="18.34%" headers="mcps1.1.5.1.1 "><p id="p17270143818"><a name="p17270143818"></a><a name="p17270143818"></a>pqDistanceTable_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="16.11%" headers="mcps1.1.5.1.2 "><p id="p32701332011"><a name="p32701332011"></a><a name="p32701332011"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.23%" headers="mcps1.1.5.1.3 "><p id="p18270031811"><a name="p18270031811"></a><a name="p18270031811"></a>ADC距离表数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="30.320000000000004%" headers="mcps1.1.5.1.4 "><p id="p2270133219"><a name="p2270133219"></a><a name="p2270133219"></a>限制为pqM*pqKsub，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“pqM”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示子空间数，<span class="parmname" id="parmname1924714131720"><a name="parmname1924714131720"></a><a name="parmname1924714131720"></a>“pqKsub”</span>是结构体<span class="parmname" id="parmname17247413229"><a name="parmname17247413229"></a><a name="parmname17247413229"></a>“PQParams”</span>中的字段，表示子空间内聚类中心数。</p>
-</td>
-</tr>
-<tr id="row746811684410"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p26190151167"><a name="p26190151167"></a><a name="p26190151167"></a>params</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p674585615524"><a name="p674585615524"></a><a name="p674585615524"></a>const PQParams</p>
-</td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p184692620448"><a name="p184692620448"></a><a name="p184692620448"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname1163683593716"><a name="parmname1163683593716"></a><a name="parmname1163683593716"></a>“PQParams”</span>字段描述。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 参数名称 | 数据类型 | 描述 | 取值范围 |
+| --- | --- | --- | --- |
+| vector | float* | 原始向量。 | 限制非空；每个分量必须为有限值且绝对值不超过 1e17，否则接口返回 -1。 |
+| pqDistanceTable | float* | ADC距离表。也可以作为输出值。 | 限制非空。长度为pqDistanceTable_size，其中“pqDistanceTable_size”为ADC距离表数组的长度。 |
+| pqDistanceTable_size | size_t | ADC距离表数组的长度。 | 限制为pqM*pqKsub，其中“pqM”是结构体“PQParams”中的字段，表示子空间数，“pqKsub”是结构体“PQParams”中的字段，表示子空间内聚类中心数。 |
+| params | const PQParams | 字段描述请参见[结构体说明](#结构体说明)中的“PQParams”字段描述。 | - |
 
-**返回值<a name="section49971832106"></a>**
+**返回值**
 
-<a name="table17997635100"></a>
-<table><thead align="left"><tr id="row699763141018"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p id="p699793141012"><a name="p699793141012"></a><a name="p699793141012"></a>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p id="p1999763141020"><a name="p1999763141020"></a><a name="p1999763141020"></a>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row1599716361015"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p id="p39970319101"><a name="p39970319101"></a><a name="p39970319101"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p id="p53461032104518"><a name="p53461032104518"></a><a name="p53461032104518"></a>正常运行时返回0，异常退出返回-1。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 数据类型 | 说明 |
+| --- | --- |
+| int | 正常运行时返回0，异常退出返回-1。 |
 
 **使用示例**
 
@@ -825,115 +483,23 @@ int GetPQDistance\(const unsigned char \*basecode, const unsigned char \*queryco
 
 **参数说明<a name="section157501312135019"></a>**
 
-<a name="table1646711617442"></a>
-<table><thead align="left"><tr id="row846751612442"><th class="cellrowborder" valign="top" width="17.588241175882413%" id="mcps1.1.5.1.1"><p id="p1035755516441"><a name="p1035755516441"></a><a name="p1035755516441"></a><strong id="b535775554413"><a name="b535775554413"></a><a name="b535775554413"></a>参数名称</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="21.18788121187881%" id="mcps1.1.5.1.2"><p id="p335712558441"><a name="p335712558441"></a><a name="p335712558441"></a><strong id="b153571755154417"><a name="b153571755154417"></a><a name="b153571755154417"></a>数据类型</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="35.24647535246475%" id="mcps1.1.5.1.3"><p id="p11785165413"><a name="p11785165413"></a><a name="p11785165413"></a><strong id="b177251165410"><a name="b177251165410"></a><a name="b177251165410"></a>描述</strong></p>
-</th>
-<th class="cellrowborder" valign="top" width="25.977402259774017%" id="mcps1.1.5.1.4"><p id="p8357955164412"><a name="p8357955164412"></a><a name="p8357955164412"></a><strong id="b335775510441"><a name="b335775510441"></a><a name="b335775510441"></a>取值范围</strong></p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row146815169448"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p1563124410561"><a name="p1563124410561"></a><a name="p1563124410561"></a>basecode</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p956394495618"><a name="p956394495618"></a><a name="p956394495618"></a>unsigned char*</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p9755115414"><a name="p9755115414"></a><a name="p9755115414"></a>量化后的base。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p156334415617"><a name="p156334415617"></a><a name="p156334415617"></a>限制非空。</p>
-</td>
-</tr>
-<tr id="row18468216154410"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p125631744155611"><a name="p125631744155611"></a><a name="p125631744155611"></a>querycode</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p1956313447562"><a name="p1956313447562"></a><a name="p1956313447562"></a>unsigned char*</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p379518542"><a name="p379518542"></a><a name="p379518542"></a>量化后的query。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p215516591885"><a name="p215516591885"></a><a name="p215516591885"></a>-</p>
-</td>
-</tr>
-<tr id="row746811684410"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p1056334411567"><a name="p1056334411567"></a><a name="p1056334411567"></a>pqDistanceTable</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p11563544205617"><a name="p11563544205617"></a><a name="p11563544205617"></a>float*</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p15835185413"><a name="p15835185413"></a><a name="p15835185413"></a>SDC/ADC距离表。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p6563174415562"><a name="p6563174415562"></a><a name="p6563174415562"></a>限制非空。</p>
-</td>
-</tr>
-<tr id="row84681167446"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p2563444175617"><a name="p2563444175617"></a><a name="p2563444175617"></a>PQDistance</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p8563164416569"><a name="p8563164416569"></a><a name="p8563164416569"></a>float*</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p118155155413"><a name="p118155155413"></a><a name="p118155155413"></a>SDC/ADC距离。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p17563744115619"><a name="p17563744115619"></a><a name="p17563744115619"></a>限制非空。</p>
-</td>
-</tr>
-<tr id="row7632211969"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p147365121966"><a name="p147365121966"></a><a name="p147365121966"></a>basecode_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p196328113620"><a name="p196328113620"></a><a name="p196328113620"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p6632711166"><a name="p6632711166"></a><a name="p6632711166"></a>量化后的base数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p46321611562"><a name="p46321611562"></a><a name="p46321611562"></a>限制为pqM，其中<span class="parmname" id="parmname19863104816351"><a name="parmname19863104816351"></a><a name="parmname19863104816351"></a>“pqM”</span>是结构体<span class="parmname" id="parmname9438142552910"><a name="parmname9438142552910"></a><a name="parmname9438142552910"></a>“PQParams”</span>中的字段，表示子空间数。</p>
-</td>
-</tr>
-<tr id="row7553121017617"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p1173613121166"><a name="p1173613121166"></a><a name="p1173613121166"></a>querycode_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p155310101968"><a name="p155310101968"></a><a name="p155310101968"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p135531100620"><a name="p135531100620"></a><a name="p135531100620"></a>量化后的query数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p11553151016614"><a name="p11553151016614"></a><a name="p11553151016614"></a>若querycode非空，限制为pqM，其中<span class="parmname" id="parmname164661619109"><a name="parmname164661619109"></a><a name="parmname164661619109"></a>“querycode”</span>表示量化后的query，<span class="parmname" id="parmname776313131872"><a name="parmname776313131872"></a><a name="parmname776313131872"></a>“pqM”</span>是结构体<span class="parmname" id="parmname147634134712"><a name="parmname147634134712"></a><a name="parmname147634134712"></a>“PQParams”</span>中的字段，表示子空间数。</p>
-</td>
-</tr>
-<tr id="row13989131111620"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p137361312160"><a name="p137361312160"></a><a name="p137361312160"></a>pqDistanceTable_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p159891111464"><a name="p159891111464"></a><a name="p159891111464"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p39890111161"><a name="p39890111161"></a><a name="p39890111161"></a>SDC/ADC距离表数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p189890111611"><a name="p189890111611"></a><a name="p189890111611"></a>若querycode为空时，限制为pqM*pqKsub，querycode非空时，限制为pqM*pqKsub*pqKsub，其中<span class="parmname" id="parmname8580192761111"><a name="parmname8580192761111"></a><a name="parmname8580192761111"></a>“querycode”</span>表示量化后的query，<span class="parmname" id="parmname25251614476"><a name="parmname25251614476"></a><a name="parmname25251614476"></a>“pqM”</span>是结构体<span class="parmname" id="parmname17525111417715"><a name="parmname17525111417715"></a><a name="parmname17525111417715"></a>“PQParams”</span>中的字段，表示子空间数，<span class="parmname" id="parmname1652519141777"><a name="parmname1652519141777"></a><a name="parmname1652519141777"></a>“pqKsub”</span>是结构体<span class="parmname" id="parmname1752519141579"><a name="parmname1752519141579"></a><a name="parmname1752519141579"></a>“PQParams”</span>中的字段，表示子空间内聚类中心数。</p>
-</td>
-</tr>
-<tr id="row8727198062"><td class="cellrowborder" valign="top" width="17.588241175882413%" headers="mcps1.1.5.1.1 "><p id="p19736201215610"><a name="p19736201215610"></a><a name="p19736201215610"></a>PQDistance_size</p>
-</td>
-<td class="cellrowborder" valign="top" width="21.18788121187881%" headers="mcps1.1.5.1.2 "><p id="p20727681562"><a name="p20727681562"></a><a name="p20727681562"></a>size_t</p>
-</td>
-<td class="cellrowborder" valign="top" width="35.24647535246475%" headers="mcps1.1.5.1.3 "><p id="p67271482618"><a name="p67271482618"></a><a name="p67271482618"></a>SDC/ADC距离数组的长度。</p>
-</td>
-<td class="cellrowborder" valign="top" width="25.977402259774017%" headers="mcps1.1.5.1.4 "><p id="p197271781460"><a name="p197271781460"></a><a name="p197271781460"></a>限制为1。</p>
-</td>
-</tr>
-<tr id="row13649153083811"><td class="cellrowborder" valign="top" headers="mcps1.1.5.1.1 "><p id="p18649930173810"><a name="p18649930173810"></a><a name="p18649930173810"></a>params</p>
-</td>
-<td class="cellrowborder" valign="top" headers="mcps1.1.5.1.2 "><p id="p1358611261262"><a name="p1358611261262"></a><a name="p1358611261262"></a>const PQParams</p>
-</td>
-<td class="cellrowborder" colspan="2" valign="top" headers="mcps1.1.5.1.3 mcps1.1.5.1.4 "><p id="p107381649203819"><a name="p107381649203819"></a><a name="p107381649203819"></a>字段描述请参见<a href="#结构体VectorArray字段描述">结构体说明</a>中的<span class="parmname" id="parmname1724484014373"><a name="parmname1724484014373"></a><a name="parmname1724484014373"></a>“PQParams”</span>字段描述。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 参数名称 | 数据类型 | 描述 | 取值范围 |
+| --- | --- | --- | --- |
+| basecode | unsigned char* | 量化后的base。 | 限制非空。 |
+| querycode | unsigned char* | 量化后的query。 | - |
+| pqDistanceTable | float* | SDC/ADC距离表。 | 限制非空。 |
+| PQDistance | float* | SDC/ADC距离。 | 限制非空。 |
+| basecode_size | size_t | 量化后的base数组的长度。 | 限制为pqM，其中“pqM”是结构体“PQParams”中的字段，表示子空间数。 |
+| querycode_size | size_t | 量化后的query数组的长度。 | 若querycode非空，限制为pqM，其中“querycode”表示量化后的query，“pqM”是结构体“PQParams”中的字段，表示子空间数。 |
+| pqDistanceTable_size | size_t | SDC/ADC距离表数组的长度。 | 若querycode为空时，限制为pqM*pqKsub，querycode非空时，限制为pqM*pqKsub*pqKsub，其中“querycode”表示量化后的query，“pqM”是结构体“PQParams”中的字段，表示子空间数，“pqKsub”是结构体“PQParams”中的字段，表示子空间内聚类中心数。 |
+| PQDistance_size | size_t | SDC/ADC距离数组的长度。 | 限制为1。 |
+| params | const PQParams | 字段描述请参见[结构体说明](#结构体说明)中的“PQParams”字段描述。 | - |
 
-**返回值<a name="section49971832106"></a>**
+**返回值**
 
-<a name="table17997635100"></a>
-<table><thead align="left"><tr id="row699763141018"><th class="cellrowborder" valign="top" width="40%" id="mcps1.1.3.1.1"><p id="p699793141012"><a name="p699793141012"></a><a name="p699793141012"></a>数据类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="60%" id="mcps1.1.3.1.2"><p id="p1999763141020"><a name="p1999763141020"></a><a name="p1999763141020"></a>说明</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="row1599716361015"><td class="cellrowborder" valign="top" width="40%" headers="mcps1.1.3.1.1 "><p id="p39970319101"><a name="p39970319101"></a><a name="p39970319101"></a>int</p>
-</td>
-<td class="cellrowborder" valign="top" width="60%" headers="mcps1.1.3.1.2 "><p id="p53461032104518"><a name="p53461032104518"></a><a name="p53461032104518"></a>正常运行时返回0，异常退出返回-1。</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 数据类型 | 说明 |
+| --- | --- |
+| int | 正常运行时返回0，异常退出返回-1。 |
 
 **使用示例**
 
@@ -1032,3 +598,9 @@ int main() {
     return 0;
 }
 ```
+
+## 修订记录
+
+|文档版本|发布日期|修改说明|
+|--|--|--|
+|01|2025-09-30|第一次正式发布。|

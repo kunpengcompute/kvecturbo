@@ -1,8 +1,12 @@
 # 快速入门
 
+本文档介绍KVecTurbo量化算法，可对接openGauss数据库，适用于需要使用KVecTurbo与openGauss集成提升图算法性能的用户。
+
+## 集成openGauss
+
 KVecTurbo量化算法可对接openGauss（7.0.0 RC1及后续版本）数据库使用，提高HNSW（Hierarchical Navigable Small World）图算法的性能。
 
-openGauss社区文档中心提供了KVecTurbo量化算法使用示例可供参考，具体使用步骤如下：
+openGauss社区文档中心提供了KVecTurbo量化算法使用示例可供参考，具体使用步骤如下。
 
 1. 安装openGauss。
 
@@ -15,3 +19,9 @@ openGauss社区文档中心提供了KVecTurbo量化算法使用示例可供参�
 3. <a name="li19663161713104"></a>使用KVecTurbo算法。
 
     请参见《[PQ特性](https://docs.opengauss.org/zh/docs/latest/datavec/pq.html)》**HNSW-PQ**章节使用。
+
+## 修订记录
+
+|文档版本|发布日期|修改说明|
+|--|--|--|
+|01|2025-09-30|第一次正式发布。|

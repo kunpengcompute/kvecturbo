@@ -1,35 +1,14 @@
 # 安装指南
 
+本文档为KVecTurbo安装指南，介绍已验证环境配置、依赖安装和编译步骤，适用于需要安装KVecTurbo的用户。
+
 ## 已验证环境
 
-**表 1** KVecturbo已验证环境<a id="KVecturbo已验证环境"></a>
+**表 1** KVecTurbo已验证环境<a id="KVecTurbo已验证环境"></a>
 
-<a name="table59918346913"></a>
-<table><thead align="left"><tr id="zh-cn_topic_0000002483307829_row1169294312212"><th class="cellrowborder" valign="top" width="21.8%" id="mcps1.2.6.1.1"><p id="zh-cn_topic_0000002483307829_p12692144313211"><a name="zh-cn_topic_0000002483307829_p12692144313211"></a><a name="zh-cn_topic_0000002483307829_p12692144313211"></a>操作系统</p>
-</th>
-<th class="cellrowborder" valign="top" width="19.91%" id="mcps1.2.6.1.2"><p id="zh-cn_topic_0000002483307829_p06926438214"><a name="zh-cn_topic_0000002483307829_p06926438214"></a><a name="zh-cn_topic_0000002483307829_p06926438214"></a>CPU类型</p>
-</th>
-<th class="cellrowborder" valign="top" width="13.700000000000001%" id="mcps1.2.6.1.3"><p id="zh-cn_topic_0000002483307829_p269284310216"><a name="zh-cn_topic_0000002483307829_p269284310216"></a><a name="zh-cn_topic_0000002483307829_p269284310216"></a>内存</p>
-</th>
-<th class="cellrowborder" valign="top" width="17.34%" id="mcps1.2.6.1.4"><p id="zh-cn_topic_0000002483307829_p196922434215"><a name="zh-cn_topic_0000002483307829_p196922434215"></a><a name="zh-cn_topic_0000002483307829_p196922434215"></a>编译器</p>
-</th>
-<th class="cellrowborder" valign="top" width="27.250000000000004%" id="mcps1.2.6.1.5"><p id="zh-cn_topic_0000002483307829_p1769219435210"><a name="zh-cn_topic_0000002483307829_p1769219435210"></a><a name="zh-cn_topic_0000002483307829_p1769219435210"></a>其他</p>
-</th>
-</tr>
-</thead>
-<tbody><tr id="zh-cn_topic_0000002483307829_row069394311217"><td class="cellrowborder" valign="top" width="21.8%" headers="mcps1.2.6.1.1 "><p id="zh-cn_topic_0000002483307829_p1490510151227"><a name="zh-cn_topic_0000002483307829_p1490510151227"></a><a name="zh-cn_topic_0000002483307829_p1490510151227"></a>openEuler 22.03 LTS SP3<br>openEuler 20.03 LTS SP4</p>
-</td>
-<td class="cellrowborder" valign="top" width="19.91%" headers="mcps1.2.6.1.2 "><p id="zh-cn_topic_0000002483307829_p199164284117"><a name="zh-cn_topic_0000002483307829_p199164284117"></a><a name="zh-cn_topic_0000002483307829_p199164284117"></a>鲲鹏920 7282C处理器</p>
-</td>
-<td class="cellrowborder" valign="top" width="13.700000000000001%" headers="mcps1.2.6.1.3 "><p id="zh-cn_topic_0000002483307829_p1859394516475"><a name="zh-cn_topic_0000002483307829_p1859394516475"></a><a name="zh-cn_topic_0000002483307829_p1859394516475"></a>16 * 32GB</p>
-</td>
-<td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.2.6.1.4 "><p id="zh-cn_topic_0000002483307829_p16693164362119"><a name="zh-cn_topic_0000002483307829_p16693164362119"></a><a name="zh-cn_topic_0000002483307829_p16693164362119"></a>GCC 10.3.1</p>
-</td>
-<td class="cellrowborder" valign="top" width="27.250000000000004%" headers="mcps1.2.6.1.5 "><p id="zh-cn_topic_0000002483307829_p8852457817"><a name="zh-cn_topic_0000002483307829_p8852457817"></a><a name="zh-cn_topic_0000002483307829_p8852457817"></a>CMake&gt;=3.22.0</p>
-</td>
-</tr>
-</tbody>
-</table>
+| 操作系统 | CPU类型 | 内存 | 编译器 | 其他 |
+| --- | --- | --- | --- | --- |
+| openEuler 22.03 LTS SP3；openEuler 20.03 LTS SP4 | 鲲鹏920 7282C处理器 | 16 * 32GB | GCC 10.3.1 | CMake 3.22.0及以上版本 |
 
 ## 编译KVecTurbo
 
@@ -65,3 +44,9 @@
     ```
 
     生成的动态库文件libkvecturbo.so. **_xxxx_** 位于“out/lib“文件夹下，头文件位于“out/include“文件夹下。其中 **_xxxx_** 表示版本号。
+
+## 修订记录
+
+|文档版本|发布日期|修改说明|
+|--|--|--|
+|01|2025-09-30|第一次正式发布。|
