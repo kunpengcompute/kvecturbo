@@ -76,7 +76,7 @@ This code repository contributes to the openGauss community's open-source projec
 
 ## License
 
-KVecTurbo is licensed under the Apache 2.0 license, which allows modification and redistribution of derivative works as open source. For details, see [LICENSE](./docs/LICENSE).
+KVecTurbo is licensed under the Mulan PSL v2 license, which allows modification and redistribution of derivative works as open source. For details, see [LICENSE](./LICENSE).
 
 The documents of this project are licensed under CC-BY 4.0. For details, see [LICENSE](./docs/LICENSE).
 
